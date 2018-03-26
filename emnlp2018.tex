@@ -2,46 +2,146 @@
 % File emnlp2018.tex
 %
 \documentclass[11pt,a4paper]{article}
-\usepackage[hyperref]{acl2018}
-\usepackage{times}
+\usepackage{acl-onecolumn}
 \usepackage{latexsym}
-
 \usepackage{url}
 
-%\aclfinalcopy % Uncomment this line for the final submission
-%\def\aclpaperid{***} %  Enter the acl Paper ID here
-
-%\setlength\titlebox{5cm}
-% You can expand the titlebox if you need extra space
-% to show all the authors. Please do not make the titlebox
-% smaller than 5cm (the original size); we will check this
-% in the camera-ready version and ask you to change it back.
-
 \title{A Clustering-based Representation of Unigrams and Concepts}
-
-\author{First Author \\
-  Affiliation / Address line 1 \\
-  Affiliation / Address line 2 \\
-  Affiliation / Address line 3 \\
-  {\tt email@domain} \\\And
-  Second Author \\
-  Affiliation / Address line 1 \\
-  Affiliation / Address line 2 \\
-  Affiliation / Address line 3 \\
-  {\tt email@domain} \\}
 
 \date{}
 
 \begin{document}
 \maketitle
-\begin{abstract}
-
-\end{abstract}
 
 
 \section{Introduction}
 
-\cite{slonim2000document}
+Existing representations are heuristic and memory intensive
+\cite{mikolov2013efficient,pennington2014glove}.
+We use sequential information bottleneck clustering for unigrams and concepts
+\cite{slonim2000document}.
+Our code is available\footnote{\url{https://github.ibm.com/DANIELH/sib}}.
+
+\section{Sequential information bottleneck concept clustering}
+
+\paragraph{Extracting concept co-occurrences.}
+
+The first step is to create a conditional distribution matrix,
+of concept $x$ to occur (e.g. in a sentence) given that concept $y$ occurs, for each
+$x\in X$ and
+$y\in Y$\footnote{\url{https://github.ibm.com/DANIELH/sib/blob/master/cooccur/counts.py}}.
+
+Given
+\begin{enumerate}
+\item concept counts (according to the TW on any corpus),
+\item concept in-link counts (from Wikipedia), and
+\item concept pair counts (according to the TW on any corpus),
+\end{enumerate}
+we first filter the list of concepts to include only concepts with at least 50
+in-links,
+giving us $N$ concepts.
+We then define $Y$ to be the $N_1=2,000$ most frequent concepts
+and $X$ to be all $N$ concepts.
+We filter zero rows and columns from the resulting co-occurrence count matrix,
+and remove the co-occurrence count of each concept with itself.
+We create the conditional distribution $p(y|x)$ by dividing each row by its
+sum\footnote{\url{https://github.ibm.com/DANIELH/sib/blob/master/sib/joint_distribution.py}},
+giving a matrix of size $N\times N_1$.
+
+\paragraph{Clustering.}
+
+We take the $N_2=20,000$ most frequent concepts from the
+conditional distribution matrix, giving a sub-matrix of size $N_2\times N_1$.
+We use the following procedure to calculate $N_c=500$
+clusters\footnote{\url{https://github.ibm.com/DANIELH/sib/blob/master/sib/sequential_information_bottleneck.py}}:
+We repeat the following steps 10 times (``restarts'') and select the one
+with the best score, defined by
+\[
+I(T;Y).
+\]
+
+We start by assigning each concept in $X$ randomly to one of the $T$ clusters.
+We then repeatedly iterate through all concepts $x\in X$ to update their assigned
+clusters, until less than 1\% of them change clusters.
+At each iteration we reassign a concept $x$ to its closest cluster $t$,
+where the distance is
+\[
+(p(x)+p(t))\cdot JS(p(y|x),p(y|t)).
+\]
+$JS$ is the Jensen-Shannon divergence.
+
+The result of clustering is a $N_2 \times N_c$ matrix,
+saying for each concept $x$ what its distance is from each cluster $t$.
+We expand this to a $N\times N_c$ matrix by calculating concept-cluster
+distances for all $N$ concepts, even those that were not used for the
+sequential clustering.
+This assigns a cluster for every concept.
+
+\paragraph{Extracting concept-cluster co-occurrences.}
+
+From the assignment to clusters we now calculate the conditional distribution
+$p(t|x)$\footnote{\url{https://github.ibm.com/DANIELH/sib/blob/master/cooccur/cluster_counts.py}},
+that is, the probability for there to be any concept $y$ belonging to cluster $t$
+occurring in a sentence, given that we know concept $x$ occurs in the sentence.
+This gives a $N\times N_c$ matrix.
+
+\paragraph{Concept representation.}
+
+We can now calculate a representation for each concept $x\in X$,
+with several options:
+\begin{itemize}
+\item $u_1(x)$: its cluster ID, that is, the closest cluster by JSD.
+\item $u_2(x)$: its cluster centroid, that is, $p(y|t)$ for the cluster
+  $t$ closest to $x$---of dimension $N_1$.
+\item $u_3(x)$: its original $p(y|x)$, of dimension $N_1$ (does not require clustering).
+\item $u_4(x)$: defined as $JS(p(y|x),p(y|t))$ for each $t$---of dimension $N_c$.
+\item $u_5(x)$: conditional distribution of $y$'s clusters given $x$: $p(t|x)$,
+  of dimension $N_c$.
+\end{itemize}
+
+\paragraph{Measuring similarity between concepts.}
+
+With these representations we can calculate several similarity functions
+between two concepts $x_1,x_2$:
+\begin{itemize}
+\item $u_1(x_1)=u_1(x_2)$:
+  indicates whether the concepts are in the same cluster.
+\item $d(u_i(x_1),u_i(x_2))$ for $i=2,3,4,5$ and for $d$ being either
+  cosine similarity or JS.
+\end{itemize}
+
+
+\paragraph{Measuring similarity between sentences.}
+
+To measure the similarity between sentences $s_1,s_2$, we first use the TW
+to extract the set of concepts in each sentence, $X_1,X_2$.
+We then calculate the representation of a sentence $s_j$ to be the element-wise average
+of the vectors $u_i(x)$ for $x\in X_j$.
+We can define $u_i(s_j)$ this
+way\footnote{\url{https://github.ibm.com/DANIELH/sib/blob/master/evaluation/evaluate_sentence_relatedness.py}}.
+
+As the actual similarity function, we use $d(u_5(s_1),u_5(s_2))$ for $d$ being either
+  cosine similarity or JS.
+  
+\paragraph{Error analysis.}
+For error analysis, we use the sentence similarity benchmark,
+after extracting concepts for each sentence using the
+TW\footnote{\url{https://github.ibm.com/DANIELH/sib/blob/master/sentence_similarity/labeled_triplets_tw.csv}}.
+This consists of rows $X_1,X_2,X_3$ where each is a set of concepts,
+and by definition the second sentence was labeled as more similar to the first
+sentence than the third was, that is,
+\[
+sim(s_1,s_2)>sim(s_1,s_3).
+\]
+For each row we calculate
+\[
+d(u_5(s_1),u_5(s_3)) - d(u_5(s_1),u_5(s_2))
+\]
+We want this difference to always be as big as possible,
+that is, we want the third sentence to be considered more different than
+the anchor than the second sentence is.
+We therefore sort the list of sentence according to this value
+in ascending order, and look at the first 100 items.
 
 \bibliography{references}
 \bibliographystyle{acl_natbib}
