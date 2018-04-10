@@ -189,6 +189,38 @@ the anchor than the second sentence is.
 We therefore sort the list of sentence according to this value
 in ascending order, and look at the first 100 items.
 
+\paragraph{Runtime complexity.}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Related Work}\label{sec:related_work}
+
+\paragraph{Word representation.}
+\citet{brown1992class} proposed an agglomerative clustering algorithm,
+known as \textit{Brown clustering},
+which runs in $O(k^2N)$ for $k$ clusters and a vocabulary of size $N$.
+It assigns a cluster for each of the top $k$ frequent words,
+and then iteratively adds words and merges clusters to minimize the
+perplexity of a class-based bigram language model,
+or equivalently, the mutual information between each pair of clusters in a bigram.
+This results in a hierarchical clustering, encoded in a binary tree.
+
+\citet{pereira1993distributional} induce word clusters from a co-occurrence matrix.
+
+Many works use clusters as features \cite{miller2004name,koo2008simple,huang2009distributional,zhao2009multilingual}.
+
+Today, unsupervised word representations in the form of dense real-valued vectors
+(word embeddings) are used extensively in NLP.
+They are induced using neural networks 
+\cite{bengio2003neural,mnih2007three,collobert2008unified,turian2010word,mikolov2013efficient}.
+or matrix factorization \cite{pennington2014glove}.
+
+\paragraph{Concept representation.}
+
+
+\paragraph{Sentence representation.}
+
+
 \bibliography{references}
 \bibliographystyle{acl_natbib}
 
