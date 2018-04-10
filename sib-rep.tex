@@ -198,13 +198,15 @@ in ascending order, and look at the first 100 items.
 
 Many benchmarks have been proposed for the evaluation of unsupervised word
 representations.
-In general, they can be divided into intristic and extrinsic evaluation methods \cite{schnabel2015evaluation,jastrzebski2017evaluate}.
+In general, they can be divided into intristic and extrinsic evaluation methods \cite{schnabel2015evaluation,jastrzebski2017evaluate,alshargi2018concept2vec,bakarov2018survey}.
 
+Many similarity datasets actually capture relatedness or do not represent it
 \cite{hill2015simlex,avraham2016improving}.
 
 To evaluate our approach, we used each of the resulting word and concept
 representation methods in a set of word embedding benchmarks
 \cite{jastrzebski2017evaluate}.\footnote{\url{https://github.com/kudkudak/word-embeddings-benchmarks}}
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -229,6 +231,10 @@ Today, unsupervised word representations in the form of dense real-valued vector
 They are induced using neural networks 
 \cite{bengio2003neural,mnih2007three,collobert2008unified,turian2010word,mikolov2013efficient}.
 or matrix factorization \cite{pennington2014glove}.
+While \citet{baroni2014don} argued the neural network prediction-based models are
+consistently better on evaluation benchmarks, \citet{levy2015improving} showed
+it is not always the case, and that prediction-based models are in some cases
+equivalent to count-based ones.
 
 \paragraph{Concept representation.}
 
