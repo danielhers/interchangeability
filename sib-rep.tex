@@ -2,7 +2,8 @@
 % File sib-rep.tex
 %
 \documentclass{article}
-\usepackage{nips_2018}
+\PassOptionsToPackage{numbers}{natbib}
+\usepackage  {nips_2018}
 
 % to compile a preprint version, e.g., for submission to arXiv, add
 % add the [preprint] option:
@@ -24,229 +25,257 @@
 \usepackage{nicefrac}       % compact symbols for 1/2, etc.
 \usepackage{microtype}      % microtypography
 
-\title{A Clustering-based Representation of Unigrams and Concepts}
+\title{A Clustering-based Representation \\ of Unigrams and Concepts}
 
 \author{
-  Daniel Hershcovich \\
-  IBM Research\\
-  \texttt{danielh@il.ibm.com} \\
-  %% examples of more authors
-  %% \And
-  %% Coauthor \\
-  %% Affiliation \\
-  %% Address \\
-  %% \texttt{email} \\
-  %% \AND
-  %% Coauthor \\
-  %% Affiliation \\
-  %% Address \\
-  %% \texttt{email} \\
-  %% \And
-  %% Coauthor \\
-  %% Affiliation \\
-  %% Address \\
-  %% \texttt{email} \\
-  %% \And
-  %% Coauthor \\
-  %% Affiliation \\
-  %% Address \\
-  %% \texttt{email} \\
+Daniel Hershcovich \\
+IBM Research\\
+\texttt{danielh@il.ibm.com} \\
+%% examples of more authors
+%% \And
+%% Coauthor \\
+%% Affiliation \\
+%% Address \\
+%% \texttt{email} \\
+%% \AND
+%% Coauthor \\
+%% Affiliation \\
+%% Address \\
+%% \texttt{email} \\
+%% \And
+%% Coauthor \\
+%% Affiliation \\
+%% Address \\
+%% \texttt{email} \\
+%% \And
+%% Coauthor \\
+%% Affiliation \\
+%% Address \\
+%% \texttt{email} \\
 }
 
 \begin{document}
+    \maketitle
 
-\maketitle
+    \begin{abstract}
+    \end{abstract}
 
-\begin{abstract}
-\end{abstract}
+    \section{Introduction}\label{sec:introduction}
 
-\section{Introduction}
+    Existing representations are heuristic and memory intensive~\cite{mikolov2013efficient,pennington2014glove}.
+    We use sequential information bottleneck clustering for unigrams and concepts~\cite{slonim2000document}.
+    Our code is available\footnote{\url{https://github.ibm.com/DANIELH/sib}}.
 
-Existing representations are heuristic and memory intensive
-\cite{mikolov2013efficient,pennington2014glove}.
-We use sequential information bottleneck clustering for unigrams and concepts
-\cite{slonim2000document}.
-Our code is available\footnote{\url{https://github.ibm.com/DANIELH/sib}}.
+    \section{Sequential information bottleneck concept clustering}\label{sec:clustering}
 
-\section{Sequential information bottleneck concept clustering}
+    \paragraph{Extracting concept co-occurrences.}
 
-\paragraph{Extracting concept co-occurrences.}
+    The first step is to create a conditional distribution matrix,
+    of concept $y$ to occur (e.g. in a sentence) given that concept $x$ occurs, for each
+    $x\in X$ and
+    $y\in Y$\footnote{\url{https://github.ibm.com/DANIELH/sib/blob/master/cooccur/counts.py}}.
 
-The first step is to create a conditional distribution matrix,
-of concept $x$ to occur (e.g. in a sentence) given that concept $y$ occurs, for each
-$x\in X$ and
-$y\in Y$\footnote{\url{https://github.ibm.com/DANIELH/sib/blob/master/cooccur/counts.py}}.
+    Given
+    \begin{enumerate}
+        \item concept counts (according to the TW on any corpus),
+        \item concept in-link counts (from Wikipedia), and
+        \item concept pair counts (according to the TW on any corpus),
+    \end{enumerate}
+    we first filter the list of concepts to include only concepts with at least 50
+    in-links,
+    giving us $N$ concepts.
+    We then define $Y$ to be the $N_1=2,000$ most frequent concepts
+    and $X$ to be all $N$ concepts.
+    We filter zero rows and columns from the resulting co-occurrence count matrix,
+    and remove the co-occurrence count of each concept with itself.
+    We create the conditional distribution $p(y|x)$ by dividing each row by its
+    sum\footnote{\url{https://github.ibm.com/DANIELH/sib/blob/master/sib/joint_distribution.py}},
+    giving a matrix of size $N\times N_1$.
 
-Given
-\begin{enumerate}
-\item concept counts (according to the TW on any corpus),
-\item concept in-link counts (from Wikipedia), and
-\item concept pair counts (according to the TW on any corpus),
-\end{enumerate}
-we first filter the list of concepts to include only concepts with at least 50
-in-links,
-giving us $N$ concepts.
-We then define $Y$ to be the $N_1=2,000$ most frequent concepts
-and $X$ to be all $N$ concepts.
-We filter zero rows and columns from the resulting co-occurrence count matrix,
-and remove the co-occurrence count of each concept with itself.
-We create the conditional distribution $p(y|x)$ by dividing each row by its
-sum\footnote{\url{https://github.ibm.com/DANIELH/sib/blob/master/sib/joint_distribution.py}},
-giving a matrix of size $N\times N_1$.
+    \paragraph{Clustering.}
 
-\paragraph{Clustering.}
+    We take the $N_2=20,000$ most frequent concepts from the
+    conditional distribution matrix, giving a sub-matrix of size $N_2\times N_1$.
+    We use the following procedure to calculate $N_c=500$
+    clusters\footnote{\url{https://github.ibm.com/DANIELH/sib/blob/master/sib/sequential_information_bottleneck.py}}:
+    We repeat the following steps 10 times (``restarts'') and select the one
+    with the best score, defined by
+    \[
+        I(T;Y).
+    \]
 
-We take the $N_2=20,000$ most frequent concepts from the
-conditional distribution matrix, giving a sub-matrix of size $N_2\times N_1$.
-We use the following procedure to calculate $N_c=500$
-clusters\footnote{\url{https://github.ibm.com/DANIELH/sib/blob/master/sib/sequential_information_bottleneck.py}}:
-We repeat the following steps 10 times (``restarts'') and select the one
-with the best score, defined by
-\[
-I(T;Y).
-\]
+    We start by assigning each concept in $X$ randomly to one of the $T$ clusters.
+    We then repeatedly iterate through all concepts $x\in X$ to update their assigned
+    clusters, until less than 1\% of them change clusters.
+    At each iteration we reassign a concept $x$ to its closest cluster $t$,
+    where the distance is
+    \[
+        (p(x)+p(t))\cdot JS(p(y|x),p(y|t)).
+    \]
+    $JS$ is the Jensen-Shannon divergence.
 
-We start by assigning each concept in $X$ randomly to one of the $T$ clusters.
-We then repeatedly iterate through all concepts $x\in X$ to update their assigned
-clusters, until less than 1\% of them change clusters.
-At each iteration we reassign a concept $x$ to its closest cluster $t$,
-where the distance is
-\[
-(p(x)+p(t))\cdot JS(p(y|x),p(y|t)).
-\]
-$JS$ is the Jensen-Shannon divergence.
+    The result of clustering is a $N_2 \times N_c$ matrix,
+    saying for each concept $x$ what its distance is from each cluster $t$.
+    We expand this to a $N\times N_c$ matrix by calculating concept-cluster
+    distances for all $N$ concepts, even those that were not used for the
+    sequential clustering.
+    This assigns a cluster for every concept.
 
-The result of clustering is a $N_2 \times N_c$ matrix,
-saying for each concept $x$ what its distance is from each cluster $t$.
-We expand this to a $N\times N_c$ matrix by calculating concept-cluster
-distances for all $N$ concepts, even those that were not used for the
-sequential clustering.
-This assigns a cluster for every concept.
+    \paragraph{Extracting concept-cluster co-occurrences.}
 
-\paragraph{Extracting concept-cluster co-occurrences.}
+    From the assignment to clusters we now calculate the conditional distribution
+    $p(t|x)$\footnote{\url{https://github.ibm.com/DANIELH/sib/blob/master/cooccur/cluster_counts.py}},
+    that is, the probability for there to be any concept $y$ belonging to cluster $t$
+    occurring in a sentence, given that we know concept $x$ occurs in the sentence.
+    This gives a $N\times N_c$ matrix.
 
-From the assignment to clusters we now calculate the conditional distribution
-$p(t|x)$\footnote{\url{https://github.ibm.com/DANIELH/sib/blob/master/cooccur/cluster_counts.py}},
-that is, the probability for there to be any concept $y$ belonging to cluster $t$
-occurring in a sentence, given that we know concept $x$ occurs in the sentence.
-This gives a $N\times N_c$ matrix.
+    \paragraph{Concept representation.}
 
-\paragraph{Concept representation.}
+    We can now calculate a representation for each concept $x\in X$,
+    with several options:
+    \begin{itemize}
+        \item $u_1(x)$: its cluster ID, that is, the closest cluster by JSD.
+        \item $u_2(x)$: its cluster centroid, that is, $p(y|t)$ for the cluster
+        $t$ closest to $x$---of dimension $N_1$.
+        \item $u_3(x)$: its original $p(y|x)$, of dimension $N_1$ (does not require clustering).
+        \item $u_4(x)$: defined as $JS(p(y|x),p(y|t))$ for each $t$---of dimension $N_c$.
+        \item $u_5(x)$: conditional distribution of $y$'s clusters given $x$: $p(t|x)$,
+        of dimension $N_c$.
+    \end{itemize}
 
-We can now calculate a representation for each concept $x\in X$,
-with several options:
-\begin{itemize}
-\item $u_1(x)$: its cluster ID, that is, the closest cluster by JSD.
-\item $u_2(x)$: its cluster centroid, that is, $p(y|t)$ for the cluster
-  $t$ closest to $x$---of dimension $N_1$.
-\item $u_3(x)$: its original $p(y|x)$, of dimension $N_1$ (does not require clustering).
-\item $u_4(x)$: defined as $JS(p(y|x),p(y|t))$ for each $t$---of dimension $N_c$.
-\item $u_5(x)$: conditional distribution of $y$'s clusters given $x$: $p(t|x)$,
-  of dimension $N_c$.
-\end{itemize}
+    \paragraph{Measuring similarity between concepts.}
 
-\paragraph{Measuring similarity between concepts.}
-
-With these representations we can calculate several similarity functions
-between two concepts $x_1,x_2$:
-\begin{itemize}
-\item $u_1(x_1)=u_1(x_2)$:
-  indicates whether the concepts are in the same cluster.
-\item $d(u_i(x_1),u_i(x_2))$ for $i=2,3,4,5$ and for $d$ being either
-  cosine similarity or JS.
-\end{itemize}
+    With these representations we can calculate several similarity functions
+    between two concepts $x_1,x_2$:
+    \begin{itemize}
+        \item $u_1(x_1)=u_1(x_2)$:
+        indicates whether the concepts are in the same cluster.
+        \item $d(u_i(x_1),u_i(x_2))$ for $i=2,3,4,5$ and for $d$ being either
+        cosine similarity or JS.
+    \end{itemize}
 
 
-\paragraph{Measuring similarity between sentences.}
+    \paragraph{Measuring similarity between sentences.}
 
-To measure the similarity between sentences $s_1,s_2$, we first use the TW
-to extract the set of concepts in each sentence, $X_1,X_2$.
-We then calculate the representation of a sentence $s_j$ to be the element-wise average
-of the vectors $u_i(x)$ for $x\in X_j$.
-We can define $u_i(s_j)$ this
-way\footnote{\url{https://github.ibm.com/DANIELH/sib/blob/master/evaluation/evaluate_sentence_relatedness.py}}.
+    To measure the similarity between sentences $s_1,s_2$, we first use the TW
+    to extract the set of concepts in each sentence, $X_1,X_2$.
+    We then calculate the representation of a sentence $s_j$ to be the element-wise average
+    of the vectors $u_i(x)$ for $x\in X_j$.
+    We can define $u_i(s_j)$ this
+    way\footnote{\url{https://github.ibm.com/DANIELH/sib/blob/master/evaluation/evaluate_sentence_relatedness.py}}.
 
-As the actual similarity function, we use $d(u_5(s_1),u_5(s_2))$ for $d$ being either
-  cosine similarity or JS.
-  
-\paragraph{Error analysis.}
-For error analysis, we use the sentence similarity benchmark,
-after extracting concepts for each sentence using the
-TW\footnote{\url{https://github.ibm.com/DANIELH/sib/blob/master/sentence_similarity/labeled_triplets_tw.csv}}.
-This consists of rows $X_1,X_2,X_3$ where each is a set of concepts,
-and by definition the second sentence was labeled as more similar to the first
-sentence than the third was, that is,
-\[
-sim(s_1,s_2)>sim(s_1,s_3).
-\]
-For each row we calculate
-\[
-d(u_5(s_1),u_5(s_3)) - d(u_5(s_1),u_5(s_2))
-\]
-We want this difference to always be as big as possible,
-that is, we want the third sentence to be considered more different than
-the anchor than the second sentence is.
-We therefore sort the list of sentence according to this value
-in ascending order, and look at the first 100 items.
+    As the actual similarity function, we use $d(u_5(s_1),u_5(s_2))$ for $d$ being either
+    cosine similarity or JS.
 
-\paragraph{Runtime complexity.}
+    \paragraph{Error analysis.}
+    For error analysis, we use the sentence similarity benchmark,
+    after extracting concepts for each sentence using the
+    TW\footnote{\url{https://github.ibm.com/DANIELH/sib/blob/master/sentence_similarity/labeled_triplets_tw.csv}}.
+    This consists of rows $X_1,X_2,X_3$ where each is a set of concepts,
+    and by definition the second sentence was labeled as more similar to the first
+    sentence than the third was, that is,
+    \[
+        sim(s_1,s_2)>sim(s_1,s_3).
+    \]
+    For each row we calculate
+    \[
+        d(u_5(s_1),u_5(s_3)) - d(u_5(s_1),u_5(s_2))
+    \]
+    We want this difference to always be as big as possible,
+    that is, we want the third sentence to be considered more different than
+    the anchor than the second sentence is.
+    We therefore sort the list of sentence according to this value
+    in ascending order, and look at the first 100 items.
+
+    \paragraph{Runtime complexity.}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Experiments}\label{sec:experiments}
+    \section{Experiments}\label{sec:experiments}
 
-Many benchmarks have been proposed for the evaluation of unsupervised word
-representations.
-In general, they can be divided into intristic and extrinsic evaluation methods \cite{schnabel2015evaluation,jastrzebski2017evaluate,alshargi2018concept2vec,bakarov2018survey}.
+    Many benchmarks have been proposed for the evaluation of unsupervised word
+    representations.
+    In general, they can be divided into intristic and extrinsic evaluation methods \cite{schnabel2015evaluation,jastrzebski2017evaluate,alshargi2018concept2vec,bakarov2018survey}.
 
-Many similarity datasets actually capture relatedness or do not represent it
-\cite{hill2015simlex,avraham2016improving}.
+    Many similarity datasets actually capture relatedness or do not represent it \cite{hill2015simlex,avraham2016improving}.
 
-To evaluate our approach, we used each of the resulting word and concept
-representation methods in a set of word embedding benchmarks
-\cite{jastrzebski2017evaluate}.\footnote{\url{https://github.com/kudkudak/word-embeddings-benchmarks}}
-
-Further, we evaluate the representations on concept relatedness benchmarks
+    To evaluate our approach, we used each of the resulting word and concept
+    representation methods in a set of word embedding benchmarks~\cite{jastrzebski2017evaluate}.\footnote{\url{https://github.com/kudkudak/word-embeddings-benchmarks}}
+    
+    Further, we evaluate the representations on concept relatedness benchmarks
 \cite{levy2015tr9856,eindor2018semantic}.
+    
+    We evaluate on the following benchmarks:
+    
+    \paragraph{Similarity.}
+    
+    \begin{itemize}
+        \item MTurk-287 \cite{radinsky2011word}
+        \item MTurk-771 \cite{halawi2012large}
+        \item MEN \cite{bruni2012distributional}
+        \item WordSim-353 \cite{finkelstein2001placing}
+        \item RG65
+        \item Rare Word \cite{luong2013better}
+        \item SimLex999 \cite{hill2015simlex}
+        \item WS-Sim \cite{agirre2009study}
+        \item YP-130 \cite{yang2006verb}
+        \item MC-30 \cite{miller1991contextual}
+    \end{itemize}
+    
+    \paragraph{Relatedness.}
+    
+    \begin{itemize}
+        \item SimLex999 \cite{hill2015simlex}
+        \item TR9856 \cite{levy2015tr9856}
+        \item WORT
+        \item WS-Rel \cite{agirre2009study}
+    \end{itemize}
+    
+    \paragraph{Analogy.}
+    
+    \begin{itemize}
+        \item MSR WordRep
+        \item Google
+        \item SemEval 2012 task 2
+    \end{itemize}
+    
+    \paragraph{Categorization.}
 
 
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \section{Related Work}\label{sec:related_work}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Related Work}\label{sec:related_work}
+    \paragraph{Word representation.}
+    \citet{brown1992class} proposed an agglomerative clustering algorithm,
+    known as \textit{Brown clustering},
+    which runs in $O(k^2N)$ for $k$ clusters and a vocabulary of size $N$.
+    It assigns a cluster for each of the top $k$ frequent words,
+    and then iteratively adds words and merges clusters to minimize the
+    perplexity of a class-based bigram language model,
+    or equivalently, the mutual information between each pair of clusters in a bigram.
+    This results in a hierarchical clustering, encoded in a binary tree.
 
-\paragraph{Word representation.}
-\citet{brown1992class} proposed an agglomerative clustering algorithm,
-known as \textit{Brown clustering},
-which runs in $O(k^2N)$ for $k$ clusters and a vocabulary of size $N$.
-It assigns a cluster for each of the top $k$ frequent words,
-and then iteratively adds words and merges clusters to minimize the
-perplexity of a class-based bigram language model,
-or equivalently, the mutual information between each pair of clusters in a bigram.
-This results in a hierarchical clustering, encoded in a binary tree.
+    \citet{pereira1993distributional} induce word clusters from a co-occurrence matrix.
 
-\citet{pereira1993distributional} induce word clusters from a co-occurrence matrix.
+    Many works use clusters as features~\cite{miller2004name,koo2008simple,huang2009distributional,zhao2009multilingual}.
 
-Many works use clusters as features \cite{miller2004name,koo2008simple,huang2009distributional,zhao2009multilingual}.
-
-Today, unsupervised word representations in the form of dense real-valued vectors
-(word embeddings) are used extensively in NLP.
-They are induced using neural networks 
-\cite{bengio2003neural,mnih2007three,collobert2008unified,turian2010word,mikolov2013efficient}.
-or matrix factorization \cite{pennington2014glove}.
-While \citet{baroni2014don} argued the neural network prediction-based models are
+    Today, unsupervised word representations in the form of dense real-valued vectors
+    (word embeddings) are used extensively in NLP.
+    They are induced using neural networks~\cite{bengio2003neural,mnih2007three,collobert2008unified,turian2010word,mikolov2013efficient}.
+    or matrix factorization \cite{pennington2014glove}.
+    
+    While \citet{baroni2014don} argued the neural network prediction-based models are
 consistently better on evaluation benchmarks, \citet{levy2015improving} showed
 it is not always the case, and that prediction-based models are in some cases
 equivalent to count-based ones.
 
-\paragraph{Concept representation.}
+    \paragraph{Concept representation.}
 
 
-\paragraph{Sentence representation.}
+    \paragraph{Sentence representation.}
 
 
-\bibliography{references}
-\bibliographystyle{acl_natbib}
-
-
+    \bibliography{references}
+    \bibliographystyle{plainnat}
 \end{document}
