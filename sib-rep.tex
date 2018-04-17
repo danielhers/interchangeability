@@ -203,7 +203,9 @@ IBM Research\\
     Many similarity datasets actually capture relatedness or do not represent it~\cite{hill2015simlex,avraham2016improving}.
 
     To evaluate our approach, we used each of the resulting word and concept
-    representation methods in a set of word embedding benchmarks~\cite{jastrzebski2017evaluate}.\footnote{\url{https://github.com/kudkudak/word-embeddings-benchmarks}}
+    representation methods in a set of word embedding
+    benchmarks~\cite{faruqui-2014:SystemDemo}.\footnote{\url{http://wordvectors.org}}
+    %\cite{jastrzebski2017evaluate}.\footnote{\url{https://github.com/kudkudak/word-embeddings-benchmarks}}
     
     Further, we evaluate the representations on concept relatedness benchmarks
 \cite{levy2015tr9856,eindor2018semantic}.
@@ -220,18 +222,19 @@ IBM Research\\
         \item RG65~\cite{rubenstein1965contextual}
         \item Rare Word~\cite{luong2013better}
         \item SimLex999~\cite{hill2015simlex}
-        \item WS-Sim~\cite{agirre2009study}
-        \item YP-130~\cite{yang2006verb}
-        \item MC-30~\cite{miller1991contextual}
+        \item WordSim-353-Sim~\cite{agirre2009study}
+        \item SimVerb-3500~\cite{Gerz2016emnlp}
+%        \item YP-130~\cite{yang2006verb}
+%        \item MC-30~\cite{miller1991contextual}
     \end{itemize}
     
     \paragraph{Relatedness.}
     
     \begin{itemize}
         \item SimLex999~\cite{hill2015simlex}
+        \item WordSim-353-Rel~\cite{agirre2009study}
         \item TR9856~\cite{levy2015tr9856}
         \item WORT~\cite{eindor2018semantic}
-        \item WS-Rel~\cite{agirre2009study}
     \end{itemize}
     
     \paragraph{Analogy.}
@@ -262,6 +265,28 @@ IBM Research\\
         \item HPCA~\cite{E14-1051}
         \item Brown clusters~\cite{brown1992class}
     \end{itemize}
+    
+    \subsection{Results}\label{sec:results}
+    
+    \begin{table}
+    	\begin{tabular}{l|cccccccccccc}
+    		& MT287 & MT771 & MEN & WS353 & RG & RW & SL999 & WS-S & SV3500 \\
+    		$u_3$ \\
+    		$u_4$ \\
+    		$u_5$
+    	\end{tabular}
+    	\caption{Similarity}\label{tab:results_sim}
+    \end{table}
+    
+    \begin{table}
+    	\begin{tabular}{l|cccc}
+    		& SL999 & WS-R & TR9856 & WORT \\
+    		$u_3$ \\
+    		$u_4$ \\
+    		$u_5$
+    	\end{tabular}
+    	\caption{Relatedness}\label{tab:results_rel}
+    \end{table}
 
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
