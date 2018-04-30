@@ -143,6 +143,12 @@ IBM Research\\
         \item $u_5(x)$: conditional distribution of $y$'s clusters given $x$: $p(t|x)$,
         of dimension $N_c$.
     \end{itemize}
+    
+    Specifically, since clusters are disjoint, element $t$ of $u_5(x)$ can be calculated as
+    
+    \[
+    [u_5(x)]_t = \sum_{y} I(u_1(y)=t) p(y|x)
+    \]
 
     \paragraph{Measuring similarity between concepts.}
 
