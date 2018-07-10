@@ -13,6 +13,7 @@
 \usepackage{amsfonts}       % blackboard math symbols
 \usepackage{nicefrac}       % compact symbols for 1/2, etc.
 \usepackage{microtype}      % microtypography
+\usepackage{pgfplots,pgfplotstable}
 
 \title{Interchangeability in Word Embedding Models}
 
@@ -71,6 +72,182 @@ IBM Research\\
     
     Our code is available\footnote{\url{https://github.ibm.com/DANIELH/sib}}.
     
+    \section{Word Embedding Model}\label{sec:model}
+    
+    We train a 300-dimensional word2vec CBOW model using a context window size of
+    3, 5, 10, 15 and 50, on a corpus comprising of all articles in English Wikipedia.
+    To calculate the similarity between words, we use cosine similarity
+    between their corresponding vectors.
+    From these models, we pre-calculate the top 50 nearest neighbors for
+    each of the 50K words in the vocabulary, taken as the 50K most common
+    words in the corpus.
+    
+    
+    \section{Interchangeability in Nearest Neighbor Lists}\label{sec:nn}
+    
+    As a first experiment, we measure the proportion of same-POS words
+    within the list of nearest neighbors for each word in our vocabulary.
+    
+    \subsection{Collecting Pivots}\label{sec:pivots}
+    
+    We create word lists for the most
+    common parts of speech: nouns, adjectives and verbs.
+    For each POS, we list all lemmas of all synsets of that POS from
+    WordNet,\footnote{A possible alternative would be to start with the 50K
+    vocabulary, use spaCy to tag the POS for each of these unigrams,
+    and construct the lists this way.
+    However, this would not allow us to remove polysemous words with more
+    than one possible POS.}
+    and remove from the list any lemma that also belongs to a synset from
+    another POS.
+    This gives us a list of \textit{uniquely-noun}, \textit{uniquely-adjective}
+    and \textit{uniquely-verb} words.
+    
+    Filtering each of these lists to leave only words that are in
+    the 50K vocabulary (see~\S\ref{sec:model}) results in three lists,
+    which we refer to as the \textit{pivot lists}.
+    
+    \subsection{Nearest Neighbor Analysis}\label{sec:nn_analysis}
+    
+    Using our pre-calculated nearest neighbor lists, we create, for each
+    POS, a list of word pairs: for each word in the corresponding pivot list,
+    we take its 50 nearest neighbors, and add each one along with the pivot word
+    as a (pivot, neighbor) pair.
+    
+    For each of these lists of pairs, we use spaCy\footnote{\url{https://spacy.io}}
+    to tag the POS of the neighbor word in each pair.
+    While the spaCy POS-tagger supports tagging word sequences that are longer
+    than one word, using it for each of the words separately is likely
+    to assign each words its most commonly used POS.
+    
+    We subsequently calculate a histogram, for each POS $x$, of its
+    \textit{neighbor-POS} $y$, that is, the POS assigned to the neighbors of
+    words with POS $x$.
+    
+    \pgfplotstableread{
+	model	ADJ	ADP	ADV	CCONJ	DET	INTJ	NOUN	NUM	PART	PRON	PROPN	PUNCT	VERB	X
+	WikiCBoW300dW03	4841	65	596	7	10	272	19042	24	0	6	89	4	2025	169
+	WikiCBoW300dW05	5024	62	664	6	11	290	18658	21	0	8	89	7	2141	169
+	WikiCBoW300dW10	5090	69	739	4	10	280	18275	18	0	10	84	6	2374	191
+	WikiCBoW300dW15	5160	79	794	3	8	281	18062	14	0	12	85	9	2456	187
+	WikiCBoW300dW50	5228	77	853	5	9	264	17817	15	1	14	91	11	2559	206
+    }\noun
+    \pgfplotstabletranspose[string type,colnames from=model,input colnames to=model]\nounhist{\noun}
+    \pgfplotstableread{
+	model	ADJ	ADP	ADV	CCONJ	DET	INTJ	NOUN	PRON	PROPN	PUNCT	VERB	X
+	WikiCBoW300dW03	924	10	62	0	0	8	666	0	6	1	217	6
+	WikiCBoW300dW05	873	10	68	0	0	8	700	0	7	1	224	9
+	WikiCBoW300dW10	855	10	74	0	0	8	710	0	6	1	228	8
+	WikiCBoW300dW15	828	10	80	0	0	7	722	0	6	2	237	8
+	WikiCBoW300dW50	825	10	80	0	0	8	721	1	7	1	236	11
+    }\adjective
+    \pgfplotstabletranspose[string type,colnames from=model,input colnames to=model]\adjectivehist{\adjective}
+    \pgfplotstableread{
+	model	ADJ	ADP	ADV	CCONJ	DET	INTJ	NOUN	NUM	PART	PRON	PROPN	PUNCT	VERB	X
+	WikiCBoW300dW03	289	3	27	0	0	25	456	0	0	0	2	0	936	12
+	WikiCBoW300dW05	305	2	28	0	0	22	462	0	0	0	1	0	921	9
+	WikiCBoW300dW10	307	2	36	0	0	21	475	0	0	0	2	0	901	6
+	WikiCBoW300dW15	293	4	41	0	0	20	489	0	0	0	3	0	892	8
+	WikiCBoW300dW50	307	2	37	0	0	19	474	0	0	0	2	0	903	6
+    }\verb
+    \pgfplotstabletranspose[string type,colnames from=model,input colnames to=model]\verbhist{\verb}
+    \begin{figure*}[ht]
+	    \begin{tikzpicture}
+		    \begin{axis}[
+		    ybar=0pt,  
+		    enlarge x limits={0.05},
+		    enlarge y limits={value=0.35,upper},
+		    ymin=0,
+		    width=\textwidth,
+		    height=5cm,
+		    bar width=4pt,
+		    xtick=data,
+		    xticklabels from table={\nounhist}{model},
+		    xticklabel style={font=\tiny,rotate=45,anchor=north east},
+		    xtick align=inside,
+		    xticklabel pos=left,
+		    tickwidth=0pt,
+		    legend style={at={(axis cs:1,25000)},anchor=north west},
+		    ymajorgrids,
+		    ylabel=Neighbors of Nouns,
+		    nodes near coords={
+		     \tiny\pgfmathprintnumber[precision=0]{\pgfplotspointmeta}
+		    },
+		    every node near coord/.append style={rotate=90, anchor=west}
+		    ]
+		    \addplot table[x expr=\coordindex,y=WikiCBoW300dW03]{\nounhist};
+		    \addplot table[x expr=\coordindex,y=WikiCBoW300dW05]{\nounhist};
+		    \addplot table[x expr=\coordindex,y=WikiCBoW300dW10]{\nounhist};
+		    \addplot table[x expr=\coordindex,y=WikiCBoW300dW15]{\nounhist};
+		    \addplot table[x expr=\coordindex,y=WikiCBoW300dW50]{\nounhist};
+		    \legend{window 3,window 5,window 10,window 15,window 50}
+		    \end{axis}
+	    \end{tikzpicture}
+	    \begin{tikzpicture}
+		    \begin{axis}[
+		    ybar=0pt,
+		    enlarge x limits={0.05},
+		    enlarge y limits={value=0.35,upper},
+		    ymin=0,
+		    width=\textwidth,
+		    height=5cm,
+		    bar width=4pt,
+		    xtick=data,
+		    xticklabels from table={\adjectivehist}{model},
+		    xticklabel style={font=\tiny,rotate=45,anchor=north east},
+		    xtick align=inside,
+		    xticklabel pos=left,
+		    tickwidth=0pt,
+		    ymajorgrids,
+		    ylabel=Neighbors of Adjectives,
+		    nodes near coords={
+		     \tiny\pgfmathprintnumber[precision=0]{\pgfplotspointmeta}
+		    },
+		    every node near coord/.append style={rotate=90, anchor=west}
+		    ]
+		    \addplot table[x expr=\coordindex,y=WikiCBoW300dW03]{\adjectivehist};
+		    \addplot table[x expr=\coordindex,y=WikiCBoW300dW05]{\adjectivehist};
+		    \addplot table[x expr=\coordindex,y=WikiCBoW300dW10]{\adjectivehist};
+		    \addplot table[x expr=\coordindex,y=WikiCBoW300dW15]{\adjectivehist};
+		    \addplot table[x expr=\coordindex,y=WikiCBoW300dW50]{\adjectivehist};
+		    \end{axis}
+	    \end{tikzpicture}
+	    \begin{tikzpicture}
+		    \begin{axis}[
+		    ybar=0pt,  
+		    enlarge x limits={0.05},
+		    enlarge y limits={value=0.35,upper},
+		    ymin=0,
+		    width=\textwidth,
+		    height=5cm,
+		    bar width=4pt,
+		    xtick=data,
+		    xticklabels from table={\verbhist}{model},
+		    xticklabel style={font=\tiny,rotate=45,anchor=north east},
+		    xtick align=inside,
+		    xticklabel pos=left,
+		    tickwidth=0pt,
+		    ymajorgrids,
+		    ylabel=Neighbors of Verbs,
+		    nodes near coords={
+		     \tiny\pgfmathprintnumber[precision=0]{\pgfplotspointmeta}
+		    },
+		    every node near coord/.append style={rotate=90, anchor=west}
+		    ]
+		    \addplot table[x expr=\coordindex,y=WikiCBoW300dW03]{\verbhist};
+		    \addplot table[x expr=\coordindex,y=WikiCBoW300dW05]{\verbhist};
+		    \addplot table[x expr=\coordindex,y=WikiCBoW300dW10]{\verbhist};
+		    \addplot table[x expr=\coordindex,y=WikiCBoW300dW15]{\verbhist};
+		    \addplot table[x expr=\coordindex,y=WikiCBoW300dW50]{\verbhist};
+		    \end{axis}
+	    \end{tikzpicture}
+	    \caption{Histogram of neighbor POS for each pivot POS.
+	    \label{fig:nn_pos_hist}}
+	\end{figure*}
+
+
+
+
     
     
     \section{Benchmarks}\label{sec:benchmarks}
@@ -105,25 +282,25 @@ IBM Research\\
     \begin{itemize}
         \item MEN~\cite{bruni2012distributional}
         \item WordSim-353-Rel~\cite{zesch2008using}
-        \item TR9856~\cite{levy2015tr9856}
-        \item WORT~\cite{eindor2018semantic}
+%        \item TR9856~\cite{levy2015tr9856}
+%        \item WORT~\cite{eindor2018semantic}
     \end{itemize}
     
-    \paragraph{Analogy.}
-    
-    \begin{itemize}
-        \item MSR WordRep~\cite{gao2014wordrep}
-        \item Google~\cite{mikolov2013distributed}
-        \item SemEval 2012 task 2~\cite{jurgens2012semeval}
-    \end{itemize}
-    
-    \paragraph{Categorization.}
-    
-    \begin{itemize}
-        \item AP~\cite{almuhareb2005concept}
-        \item BLESS~\cite{baroni2011we}
-        \item Battig~\cite{battig1969category}
-    \end{itemize}
+%    \paragraph{Analogy.}
+%    
+%    \begin{itemize}
+%        \item MSR WordRep~\cite{gao2014wordrep}
+%        \item Google~\cite{mikolov2013distributed}
+%        \item SemEval 2012 task 2~\cite{jurgens2012semeval}
+%    \end{itemize}
+%    
+%    \paragraph{Categorization.}
+%    
+%    \begin{itemize}
+%        \item AP~\cite{almuhareb2005concept}
+%        \item BLESS~\cite{baroni2011we}
+%        \item Battig~\cite{battig1969category}
+%    \end{itemize}
 
 
     \bibliographystyle{plain}
