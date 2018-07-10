@@ -26,7 +26,7 @@ IBM Research\\
     \maketitle
 
     \begin{abstract}
-    We investigate the extend to which word embedding models
+    We investigate the extent to which word embedding models
     preserve interchangeability, as reflected by distances between
     word vectors, and the effect of hyperparameters---context window size in particular.
     We use part-of-speech (POS) as a proxy for interchangeability,
@@ -39,29 +39,50 @@ IBM Research\\
 
     \section{Introduction}\label{sec:introduction}
 
+    Word embedding models attempt to capture the semantic space of words
+    in a metric space of real-valued vectors.
+    While it is common knowledge that the hyperparameters used to train these
+    models affects the semantic properties of the distances arising from them
+    \cite{goldberg2016primer}, we are not aware of prior work quantifying the
+    relation between specific semantic relations and model hyperparameters.
+    In this work, we begin to answer this question.
+    As a test case, experiment with the word2vec CBOW model
+    \cite{mikolov2013efficient}, taking context window size as a hyperparameter,
+    and look at interchangeability of words as a semantic relation.
+    Although many semantic relations are captured by WordNet
+    \cite{yang2006verb,agirre2009study},
+    we interpret interchangeability for this work as having the same part-of-speech
+    (POS).
+    
+    Word embedding models often start by extracting co-occurrences from a text
+    corpus, and then perform learning on the extracted co-occurrence matrix
+    (either by training a neural network to predict words based on their neighbors,
+    as in word2vec, or by performing some manipulation,
+    such as dimensionality reduction, to the co-occurrence matrix).
+    Co-occurrences are often extracted by finding, for each word token, all
+    words within a constant-size window around that word (or a randomly-sized
+    window up to a certain maximal size, as in word2vec).
+    The size of the window (or the maximal size)
+    is a hyperparameter referred to as the \textit{context window size}.
+
+    Our experiments reveal that context window size is negatively correlated
+    with the presence of same-POS words in the 50 nearest neighbors of words
+    according to an embedding model using that context window size.
     
     Our code is available\footnote{\url{https://github.ibm.com/DANIELH/sib}}.
-
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-    \section{Experiments}\label{sec:experiments}
     
-    \subsection{Benchmarks}\label{sec:benchmarks}
+    
+    
+    \section{Benchmarks}\label{sec:benchmarks}
 
     Many benchmarks have been proposed for the evaluation of unsupervised word
     representations.
     In general, they can be divided into intrinsic and extrinsic evaluation methods~\cite{schnabel2015evaluation,jastrzebski2017evaluate,alshargi2018concept2vec,bakarov2018survey,chiu2016intrinsic}.
-
-    Many similarity datasets actually capture relatedness or do not represent it~\cite{hill2015simlex,avraham2016improving}.
-
-    To evaluate our approach, we used each of the resulting word and concept
-    representation methods in a set of word embedding
-    benchmarks~\cite{faruqui-2014:SystemDemo}.\footnote{\url{http://wordvectors.org}}
-    %\cite{jastrzebski2017evaluate}.\footnote{\url{https://github.com/kudkudak/word-embeddings-benchmarks}}
-    
-    Further, we evaluate the representations on concept relatedness benchmarks
-\cite{levy2015tr9856,eindor2018semantic}.
-    
+    While most datasets measure the semantic similarity between words,
+    many datasets actually capture semantic relatedness
+    \cite{hill2015simlex,avraham2016improving},
+    or more complex relations such as analogy or the ability to categorize
+    words based on the distributed representation encoded in word embeddings.
     We evaluate on the following benchmarks:
     
     \paragraph{Similarity.}
@@ -102,19 +123,6 @@ IBM Research\\
         \item AP~\cite{almuhareb2005concept}
         \item BLESS~\cite{baroni2011we}
         \item Battig~\cite{battig1969category}
-    \end{itemize}
-    
-    
-    \subsection{Word embedding}\label{sec:baselinse}
-    
-    As word embedding models, we use the following:
-    
-    \begin{itemize}
-%        \item GloVe~\cite{pennington2014glove}
-        \item Word2Vec~\cite{mikolov2013efficient}
-%        \item FastText~\cite{mikolov2018advances}
-%        \item HPCA~\cite{E14-1051}
-%        \item Brown clusters~\cite{brown1992class}
     \end{itemize}
 
 
