@@ -79,7 +79,7 @@ IBM Research\\
     To calculate the similarity between words, we use cosine similarity
     between their corresponding vectors.
     From these models, we pre-calculate the top 50 nearest neighbors for
-    each of the 50K words in the vocabulary, taken as the 50K most common
+    each of the 1K words in the vocabulary, taken as the 1K most common
     words in the corpus.
     
     
@@ -93,7 +93,7 @@ IBM Research\\
     We create word lists for the most
     common parts of speech: nouns, adjectives and verbs.
     For each POS, we list all lemmas of all synsets of that POS from
-    WordNet,\footnote{A possible alternative would be to start with the 50K
+    WordNet,\footnote{A possible alternative would be to start with the 1K
     vocabulary, use spaCy to tag the POS for each of these unigrams,
     and construct the lists this way.
     However, this would not allow us to remove polysemous words with more
@@ -104,8 +104,9 @@ IBM Research\\
     and \textit{uniquely-verb} words.
     
     Filtering each of these lists to leave only words that are in
-    the 50K vocabulary (see~\S\ref{sec:model}) results in three lists,
+    the 1K vocabulary (see~\S\ref{sec:model}) results in three lists,
     which we refer to as the \textit{pivot lists}.
+    They contain 543 nouns, 35 adjectives and 38 verbs, respectively
     
     \subsection{Nearest Neighbor Analysis}\label{sec:nn_analysis}
     
@@ -129,7 +130,7 @@ IBM Research\\
     Figure~\ref{fig:nn_pos_hist} shows the results of this experiment.
     For nouns, adjectives and verbs, we consistently see a decrease in
     the number of same-POS neighbors when we increase the window size,
-    while other neighbors of other POS are increasing or unaffected.
+    while other neighbors are increasing or unaffected.
     
     \pgfplotstableread{
 	model	ADJ	ADP	ADV	CCONJ	DET	INTJ	NOUN	NUM	PART	PRON	PROPN	PUNCT	VERB	X
