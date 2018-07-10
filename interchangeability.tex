@@ -124,6 +124,13 @@ IBM Research\\
     \textit{neighbor-POS} $y$, that is, the POS assigned to the neighbors of
     words with POS $x$.
     
+    \subsection{Results}\label{sec:nn_results}
+    
+    Figure~\ref{fig:nn_pos_hist} shows the results of this experiment.
+    For nouns, adjectives and verbs, we consistently see a decrease in
+    the number of same-POS neighbors when we increase the window size,
+    while other neighbors of other POS are increasing or unaffected.
+    
     \pgfplotstableread{
 	model	ADJ	ADP	ADV	CCONJ	DET	INTJ	NOUN	NUM	PART	PRON	PROPN	PUNCT	VERB	X
 	WikiCBoW300dW03	4841	65	596	7	10	272	19042	24	0	6	89	4	2025	169
@@ -156,10 +163,10 @@ IBM Research\\
 		    \begin{axis}[
 		    ybar=0pt,  
 		    enlarge x limits={0.05},
-		    enlarge y limits={value=0.35,upper},
+		    enlarge y limits={value=0.6,upper},
 		    ymin=0,
 		    width=\textwidth,
-		    height=5cm,
+		    height=4cm,
 		    bar width=4pt,
 		    xtick=data,
 		    xticklabels from table={\nounhist}{model},
@@ -167,7 +174,8 @@ IBM Research\\
 		    xtick align=inside,
 		    xticklabel pos=left,
 		    tickwidth=0pt,
-		    legend style={at={(axis cs:1,25000)},anchor=north west},
+		    legend image post style={scale=0.5},
+		    legend style={at={(axis cs:1,30000)},anchor=north west,font=\tiny},
 		    ymajorgrids,
 		    ylabel=Neighbors of Nouns,
 		    nodes near coords={
@@ -182,15 +190,17 @@ IBM Research\\
 		    \addplot table[x expr=\coordindex,y=WikiCBoW300dW50]{\nounhist};
 		    \legend{window 3,window 5,window 10,window 15,window 50}
 		    \end{axis}
+		    \node at (9, 2) {$r=-0.79765$};
+		    \node at (9, 1.5) {$p=0.105884$};
 	    \end{tikzpicture}
 	    \begin{tikzpicture}
 		    \begin{axis}[
 		    ybar=0pt,
 		    enlarge x limits={0.05},
-		    enlarge y limits={value=0.35,upper},
+		    enlarge y limits={value=0.3,upper},
 		    ymin=0,
 		    width=\textwidth,
-		    height=5cm,
+		    height=4cm,
 		    bar width=4pt,
 		    xtick=data,
 		    xticklabels from table={\adjectivehist}{model},
@@ -211,15 +221,17 @@ IBM Research\\
 		    \addplot table[x expr=\coordindex,y=WikiCBoW300dW15]{\adjectivehist};
 		    \addplot table[x expr=\coordindex,y=WikiCBoW300dW50]{\adjectivehist};
 		    \end{axis}
+		    \node at (9, 2) {$r=-0.67696$};
+		    \node at (9, 1.5) {$p=0.209396$};
 	    \end{tikzpicture}
 	    \begin{tikzpicture}
 		    \begin{axis}[
 		    ybar=0pt,  
 		    enlarge x limits={0.05},
-		    enlarge y limits={value=0.35,upper},
+		    enlarge y limits={value=0.3,upper},
 		    ymin=0,
 		    width=\textwidth,
-		    height=5cm,
+		    height=4cm,
 		    bar width=4pt,
 		    xtick=data,
 		    xticklabels from table={\verbhist}{model},
@@ -240,8 +252,13 @@ IBM Research\\
 		    \addplot table[x expr=\coordindex,y=WikiCBoW300dW15]{\verbhist};
 		    \addplot table[x expr=\coordindex,y=WikiCBoW300dW50]{\verbhist};
 		    \end{axis}
+		    \node at (2, 2) {$r=-0.46079$};
+		    \node at (2, 1.5) {$p=0.434779$};
 	    \end{tikzpicture}
 	    \caption{Histogram of neighbor POS for each pivot POS.
+	    The number of same-POS neighbors is decreasing with window size,
+	    with a Pearson correlation coefficient denoted as $r$
+	    and p-value denoted as $p$ (two-tailed t-test).
 	    \label{fig:nn_pos_hist}}
 	\end{figure*}
 
