@@ -1,10 +1,22 @@
 %
-% File sib-rep.tex
+% File interchangeability.tex
 %
-\documentclass{article}
-\PassOptionsToPackage{numbers}{natbib}
-
+\documentclass[11pt,a4paper]{article}
+\usepackage[hyperref]{naaclhlt2019}
+\usepackage{times}
 \usepackage{latexsym}
+
+\usepackage{url}
+
+%\aclfinalcopy % Uncomment this line for the final submission
+%\def\aclpaperid{***} %  Enter the acl Paper ID here
+
+%\setlength\titlebox{5cm}
+% You can expand the titlebox if you need extra space
+% to show all the authors. Please do not make the titlebox
+% smaller than 5cm (the original size); we will check this
+% in the camera-ready version and ask you to change it back.
+
 \usepackage[utf8]{inputenc} % allow utf-8 input
 \usepackage[T1]{fontenc}    % use 8-bit T1 fonts
 \usepackage{hyperref}       % hyperlinks
@@ -33,7 +45,7 @@ IBM Research\\
     We use part-of-speech (POS) as a proxy for interchangeability,
     considering words to be interchangeable if they have the same POS.
     We also investigate the relationship between interchangeability
-    and similarity as judged by commonly used word similarity benchmarks,
+    and similarity as judged by commonly	 used word similarity benchmarks,
     and correlate the result with the performance of word embedding models
     on these benchmarks.
     \end{abstract}
@@ -379,7 +391,6 @@ IBM Research\\
     which is not the one intended in constructing the benchmark.    
 
 
-    \bibliographystyle{plain}
+    \bibliographystyle{acl_natbib}
     \bibliography{references}
-%    \bibliographystyle{plainnat}
 \end{document}
