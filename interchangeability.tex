@@ -105,25 +105,6 @@ IBM Research\\
     As a first experiment, we measure the proportion of same-POS words
     within the list of nearest neighbors for each word in our vocabulary.
     
-    \subsection{Collecting Pivots}\label{sec:pivots}
-    
-    We create word lists for the most
-    common parts of speech: nouns, adjectives and verbs.
-    For each POS, we list all lemmas of all synsets of that POS from
-    WordNet,\footnote{A possible alternative would be to start with the 1K
-    vocabulary, use spaCy to tag the POS for each of these unigrams,
-    and construct the lists this way.
-    However, this would not allow us to remove polysemous words with more
-    than one possible POS.}
-    and remove from the list any lemma that also belongs to a synset from
-    another POS.
-    This gives us a list of \textit{uniquely-noun}, \textit{uniquely-adjective}
-    and \textit{uniquely-verb} words.
-    
-    Filtering each of these lists to leave only words that are in
-    the 1K vocabulary (see~\S\ref{sec:model}) results in three lists,
-    which we refer to as the \textit{pivot lists}.
-    They contain 543 nouns, 35 adjectives and 38 verbs, respectively
     
     \subsection{Nearest Neighbor Analysis}\label{sec:nn_analysis}
     
@@ -131,12 +112,6 @@ IBM Research\\
     POS, a list of word pairs: for each word in the corresponding pivot list,
     we take its 50 nearest neighbors, and add each one along with the pivot word
     as a (pivot, neighbor) pair.
-    
-    For each of these lists of pairs, we use spaCy\footnote{\url{https://spacy.io}}
-    to tag the POS of the neighbor word in each pair.
-    While the spaCy POS-tagger supports tagging word sequences that are longer
-    than one word, using it for each of the words separately is likely
-    to assign each words its most commonly used POS.
     
     We subsequently calculate a histogram, for each POS $x$, of its
     \textit{neighbor-POS} $y$, that is, the POS assigned to the neighbors of
@@ -206,6 +181,23 @@ IBM Research\\
     
     To calculate the similarity between words, we use cosine similarity
     between their corresponding vectors.
+    
+    \subsection{Collecting Pivots}\label{sec:pivots}
+    
+    We create a word list for each of the three most
+    common parts of speech: nouns, adjectives and verbs.
+    For each POS, we list all lemmas of all synsets of that POS from
+    WordNet \cite{miller1998wordnet}.
+    To ``purify'' the lists and avoid noise from homonyms,
+    we remove from each list any lemma that also belongs to a synset from
+    another POS.
+    As a further cleaning step, we use spaCy\footnote{\url{https://spacy.io}}
+    to tag each word\footnote{Without context, spaCy will likely choose the most
+    common POS based on its training corpus, which is different from WordNet.},
+    and only keep words for which the spaCy POS agrees with the WordNet POS.
+    
+    This process results in 6407 \textit{uniquely-noun}, 2784 \textit{uniquely-adjective}
+    and 1460 \textit{uniquely-verb} words, which we refer to as our \textit{pivot lists}.
     
     \subsection{Nearest Neighbor Experiments}\label{sec:nn_exp}
     
