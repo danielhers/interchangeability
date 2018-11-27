@@ -39,15 +39,20 @@ IBM Research\\
     \maketitle
 
     \begin{abstract}
+    Nearest neighbors in word embedding models are commonly observed to be
+    semantically similar, but the relations between them can vary greatly.
     We investigate the extent to which word embedding models
-    preserve interchangeability, as reflected by distances between
+    preserve syntactic interchangeability, as reflected by distances between
     word vectors, and the effect of hyperparameters---context window size in particular.
-    We use part-of-speech (POS) as a proxy for interchangeability,
-    considering words to be interchangeable if they have the same POS.
+    We use part-of-speech (POS) as a proxy for syntactic interchangeability,
+    as generally speaking, words with the same POS are syntactically valid in the same contexts.
     We also investigate the relationship between interchangeability
-    and similarity as judged by commonly	 used word similarity benchmarks,
+    and similarity as judged by commonly-used word similarity benchmarks,
     and correlate the result with the performance of word embedding models
     on these benchmarks.
+    Our results will inform future research and applications in the selection
+    of word embedding model, suggesting a principle for an appropriate selection
+    of the context window size parameter depending on the use-case.
     \end{abstract}
 
     \section{Introduction}\label{sec:introduction}
