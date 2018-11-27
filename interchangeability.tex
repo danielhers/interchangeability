@@ -67,8 +67,7 @@ IBM Research\\
     little has been done to quantify the
     effect of model hyper-parameters on output tendencies.
     In this work, we begin to answer this question.
-    As a test case, we experiment with the fastText implementation \cite{bojanowski2016enriching}
-    of the word2vec algorithms \cite{mikolov2013efficient}.
+    As a test case, we experiment with fastText \cite{bojanowski2016enriching}.
     We take the context window size as the hyper-parameter,
     and syntactic interchangeability of words as the relation under investigation,
     expressed by the part-of-speech (POS).
@@ -125,18 +124,17 @@ IBM Research\\
         \item MEN~\cite{bruni2012distributional}
     \end{itemize}
     
-    \subsection{Experimental setup}\label{sec:setup}
-    We train 300-dimensional word2vec \cite{mikolov2013efficient} models,
-    using the fastText implementation \cite{bojanowski2016enriching}.
-    We train models using a context window size of 1 up to 15,
+    \subsection{Hyper-parameters}\label{sec:hyperparams}
+    We use fastText \cite{bojanowski2016enriching} to learn
+    300-dimensional word embedding models,
+    using both the SGNS and CBOW algorithms \cite{mikolov2013efficient}.
+    The context window size varies from 1 up to 15.
+    We set the minimal word occurrence count to 500, to avoid
+    very rare words or uncommon spelling errors from skewing the results.
+    All other hyper-parameters are set to their default values.
     
     To calculate the similarity between words, we use cosine similarity
     between their corresponding vectors.
-    
-    From these models, we pre-calculate the top 50 nearest neighbors for
-    each of the 1K words in the vocabulary, taken as the 1K most common
-    words in the corpus.
-    
     
     \section{Interchangeability in Nearest Neighbor Lists}\label{sec:nn}
     
