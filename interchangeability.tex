@@ -100,42 +100,6 @@ IBM Research\\
     We focus on similarity and relatedness, and evaluate interchangeability
     of related pairs in several common benchmarks (\S\ref{sec:data}).
     
-    \section{Experiments}\label{sec:experiments}
-    
-    \subsection{Data}\label{sec:data}
-    We learn word embeddings from a corpus comprising all articles in English Wikipedia,
-    using a dump from May 1, 2017\footnote{\url{https://dumps.wikimedia.org/enwiki}}.
-    The data is preprocessed using a publicly available preprocessing
-    script\footnote{\url{http://mattmahoney.net/dc/textdata.html}},
-    extracting text, removing nonalphanumeric characters,
-    converting digits to text, and lowercasing the text.
-    
-    To measure semantic word similarity, we use the following benchmarks:
-    \begin{itemize}
-        \item MTurk-287~\cite{radinsky2011word}
-        \item MTurk-771~\cite{halawi2012large}
-        \item WordSim-353~\cite{finkelstein2001placing}
-        \item RG65~\cite{rubenstein1965contextual}
-        \item Rare Word~\cite{luong2013better}
-        \item SimLex999~\cite{hill2015simlex}
-        \item WordSim-353-Sim~\cite{agirre2009study}
-        \item WordSim-353-Rel~\cite{zesch2008using}
-        \item SimVerb-3500~\cite{Gerz2016emnlp}
-        \item MEN~\cite{bruni2012distributional}
-    \end{itemize}
-    
-    \subsection{Hyper-parameters}\label{sec:hyperparams}
-    We use fastText \cite{bojanowski2016enriching} to learn
-    300-dimensional word embedding models,
-    using both the SGNS and CBOW algorithms \cite{mikolov2013efficient}.
-    The context window size varies from 1 up to 15.
-    We set the minimal word occurrence count to 500, to avoid
-    very rare words or uncommon spelling errors from skewing the results.
-    All other hyper-parameters are set to their default values.
-    
-    To calculate the similarity between words, we use cosine similarity
-    between their corresponding vectors.
-    
     \section{Interchangeability in Nearest Neighbor Lists}\label{sec:nn}
     
     As a first experiment, we measure the proportion of same-POS words
@@ -177,6 +141,43 @@ IBM Research\\
     We subsequently calculate a histogram, for each POS $x$, of its
     \textit{neighbor-POS} $y$, that is, the POS assigned to the neighbors of
     words with POS $x$.
+    
+    
+    \section{Experiments}\label{sec:experiments}
+    
+    \subsection{Data}\label{sec:data}
+    We learn word embeddings from a corpus comprising all articles in English Wikipedia,
+    using a dump from May 1, 2017\footnote{\url{https://dumps.wikimedia.org/enwiki}}.
+    The data is preprocessed using a publicly available preprocessing
+    script\footnote{\url{http://mattmahoney.net/dc/textdata.html}},
+    extracting text, removing nonalphanumeric characters,
+    converting digits to text, and lowercasing the text.
+    
+    To measure semantic word similarity, we use the following benchmarks:
+    \begin{itemize}
+        \item MTurk-287~\cite{radinsky2011word}
+        \item MTurk-771~\cite{halawi2012large}
+        \item WordSim-353~\cite{finkelstein2001placing}
+        \item RG65~\cite{rubenstein1965contextual}
+        \item Rare Word~\cite{luong2013better}
+        \item SimLex999~\cite{hill2015simlex}
+        \item WordSim-353-Sim~\cite{agirre2009study}
+        \item WordSim-353-Rel~\cite{zesch2008using}
+        \item SimVerb-3500~\cite{Gerz2016emnlp}
+        \item MEN~\cite{bruni2012distributional}
+    \end{itemize}
+    
+    \subsection{Hyper-parameters}\label{sec:hyperparams}
+    We use fastText \cite{bojanowski2016enriching} to learn
+    300-dimensional word embedding models,
+    using both the SGNS and CBOW algorithms \cite{mikolov2013efficient}.
+    The context window size varies from 1 up to 15.
+    We set the minimal word occurrence count to 500, to avoid
+    very rare words or uncommon spelling errors from skewing the results.
+    All other hyper-parameters are set to their default values.
+    
+    To calculate the similarity between words, we use cosine similarity
+    between their corresponding vectors.
     
     \subsection{Results}\label{sec:nn_results}
     
