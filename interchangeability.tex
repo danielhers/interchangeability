@@ -43,7 +43,7 @@ IBM Research\\
     semantically similar, but the relations between them can vary greatly.
     We investigate the extent to which word embedding models
     preserve syntactic interchangeability, as reflected by distances between
-    word vectors, and the effect of hyperparameters---context window size in particular.
+    word vectors, and the effect of hyper-parameters---context window size in particular.
     We use part-of-speech (POS) as a proxy for syntactic interchangeability,
     as generally speaking, words with the same POS are syntactically valid in the same contexts.
     We also investigate the relationship between interchangeability
@@ -60,16 +60,16 @@ IBM Research\\
     Word embedding models \cite{mikolov2013efficient,pennington2014glove,levy2015improving}
     attempt to capture the semantic space of words
     in a metric space of real-valued vectors.
-    While it is common knowledge that the hyperparameters used to train these
+    While it is common knowledge that the hyper-parameters used to train these
     models affects the semantic properties of the distances arising from them
     \cite{goldberg2016primer}, and indeed, it has been shown that
     they capture many different semantic relations \cite{yang2006verb,agirre2009study},
     little has been done to quantify the
-    effect of model hyperparameters on output tendencies.
+    effect of model hyper-parameters on output tendencies.
     In this work, we begin to answer this question.
     As a test case, we experiment with the fastText implementation \cite{bojanowski2016enriching}
     of the word2vec algorithms \cite{mikolov2013efficient}.
-    We take the context window size as the hyperparameter,
+    We take the context window size as the hyper-parameter,
     and syntactic interchangeability of words as the relation under investigation,
     expressed by the part-of-speech (POS).
     
@@ -80,19 +80,59 @@ IBM Research\\
     Co-occurrences are usually extracted by finding, for each word token, all
     words within a constant-size window around that word (or a variably sized
     window up to a certain maximum).
-    The size of the context window is a hyperparameter of the training algorithm,
+    The size of the context window is a hyper-parameter of the training algorithm,
     referred to as the \textit{context window size}.
 
     Our experiments\footnote{Our code will be made available upon publication.}
     reveal that context window size is negatively correlated
     with the number of same-POS words among the nearest neighbors of words.
     
-    \section{Word Embedding Model}\label{sec:model}
+    \paragraph{Relation to word similarity.}
     
-    We train a 300-dimensional word2vec CBOW model using a context window size of
-    3, 5, 10, 15 and 50, on a corpus comprising of all articles in English Wikipedia.
+    Many benchmarks have been proposed for the evaluation of unsupervised word
+    representations.
+    In general, they can be divided into intrinsic and extrinsic evaluation methods
+    \cite{schnabel2015evaluation,chiu2016intrinsic,jastrzebski2017evaluate,alshargi2018concept2vec,bakarov2018survey}.
+    While most datasets measure the semantic similarity between words,
+    many datasets actually capture semantic relatedness
+    \cite{hill2015simlex,avraham2016improving},
+    or more complex relations such as analogy or the ability to categorize
+    words based on the distributed representation encoded in word embeddings.
+    We focus on similarity and relatedness, and evaluate interchangeability
+    of related pairs in several common benchmarks (\S\ref{sec:data}).
+    
+    \section{Experiments}\label{sec:experiments}
+    
+    \subsection{Data}\label{sec:data}
+    We learn word embeddings from a corpus comprising all articles in English Wikipedia,
+    using a dump from May 1, 2017\footnote{\url{https://dumps.wikimedia.org/enwiki}}.
+    The data is preprocessed using a publicly available preprocessing
+    script\footnote{\url{http://mattmahoney.net/dc/textdata.html}},
+    extracting text, removing nonalphanumeric characters,
+    converting digits to text, and lowercasing the text.
+    
+    To measure semantic word similarity, we use the following benchmarks:
+    \begin{itemize}
+        \item MTurk-287~\cite{radinsky2011word}
+        \item MTurk-771~\cite{halawi2012large}
+        \item WordSim-353~\cite{finkelstein2001placing}
+        \item RG65~\cite{rubenstein1965contextual}
+        \item Rare Word~\cite{luong2013better}
+        \item SimLex999~\cite{hill2015simlex}
+        \item WordSim-353-Sim~\cite{agirre2009study}
+        \item WordSim-353-Rel~\cite{zesch2008using}
+        \item SimVerb-3500~\cite{Gerz2016emnlp}
+        \item MEN~\cite{bruni2012distributional}
+    \end{itemize}
+    
+    \subsection{Experimental setup}\label{sec:setup}
+    We train 300-dimensional word2vec \cite{mikolov2013efficient} models,
+    using the fastText implementation \cite{bojanowski2016enriching}.
+    We train models using a context window size of 1 up to 15,
+    
     To calculate the similarity between words, we use cosine similarity
     between their corresponding vectors.
+    
     From these models, we pre-calculate the top 50 nearest neighbors for
     each of the 1K words in the vocabulary, taken as the 1K most common
     words in the corpus.
@@ -285,56 +325,6 @@ IBM Research\\
     
     \section{Interchangeability in Word Pair Benchmarks}\label{sec:benchmarks}
 
-    Many benchmarks have been proposed for the evaluation of unsupervised word
-    representations.
-    In general, they can be divided into intrinsic and extrinsic evaluation methods~\cite{schnabel2015evaluation,jastrzebski2017evaluate,alshargi2018concept2vec,bakarov2018survey,chiu2016intrinsic}.
-    While most datasets measure the semantic similarity between words,
-    many datasets actually capture semantic relatedness
-    \cite{hill2015simlex,avraham2016improving},
-    or more complex relations such as analogy or the ability to categorize
-    words based on the distributed representation encoded in word embeddings.
-    We focus on similarity and relatedness, and evaluate interchangeability
-    of related pairs in the following benchmarks:
-    
-    \paragraph{Similarity.}
-    
-    \begin{itemize}
-        \item MTurk-287~\cite{radinsky2011word}
-        \item MTurk-771~\cite{halawi2012large}
-        \item WordSim-353~\cite{finkelstein2001placing}
-        \item RG65~\cite{rubenstein1965contextual}
-        \item Rare Word~\cite{luong2013better}
-        \item SimLex999~\cite{hill2015simlex}
-        \item WordSim-353-Sim~\cite{agirre2009study}
-        \item SimVerb-3500~\cite{Gerz2016emnlp}
-%        \item YP-130~\cite{yang2006verb}
-%        \item MC-30~\cite{miller1991contextual}
-    \end{itemize}
-    
-    \paragraph{Relatedness.}
-    
-    \begin{itemize}
-        \item MEN~\cite{bruni2012distributional}
-        \item WordSim-353-Rel~\cite{zesch2008using}
-%        \item TR9856~\cite{levy2015tr9856}
-%        \item WORT~\cite{eindor2018semantic}
-    \end{itemize}
-    
-%    \paragraph{Analogy.}
-%    
-%    \begin{itemize}
-%        \item MSR WordRep~\cite{gao2014wordrep}
-%        \item Google~\cite{mikolov2013distributed}
-%        \item SemEval 2012 task 2~\cite{jurgens2012semeval}
-%    \end{itemize}
-%    
-%    \paragraph{Categorization.}
-%    
-%    \begin{itemize}
-%        \item AP~\cite{almuhareb2005concept}
-%        \item BLESS~\cite{baroni2011we}
-%        \item Battig~\cite{battig1969category}
-%    \end{itemize}
 
     \subsection{Relatedness Threshold}\label{sec:threshold}
     
