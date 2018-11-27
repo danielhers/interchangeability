@@ -57,36 +57,35 @@ IBM Research\\
 
     \section{Introduction}\label{sec:introduction}
 
-    Word embedding models attempt to capture the semantic space of words
+    Word embedding models \cite{mikolov2013efficient,pennington2014glove,levy2015improving}
+    attempt to capture the semantic space of words
     in a metric space of real-valued vectors.
     While it is common knowledge that the hyperparameters used to train these
     models affects the semantic properties of the distances arising from them
-    \cite{goldberg2016primer}, we are not aware of prior work quantifying the
-    relation between specific semantic relations and model hyperparameters.
+    \cite{goldberg2016primer}, and indeed, it has been shown that
+    they capture many different semantic relations \cite{yang2006verb,agirre2009study},
+    little has been done to quantify the
+    effect of model hyperparameters on output tendencies.
     In this work, we begin to answer this question.
-    As a test case, experiment with the word2vec CBOW model
-    \cite{mikolov2013efficient}, taking context window size as a hyperparameter,
-    and look at interchangeability of words as a semantic relation.
-    Although many semantic relations are captured by WordNet
-    \cite{yang2006verb,agirre2009study},
-    we interpret interchangeability for this work as having the same part-of-speech
-    (POS).
+    As a test case, we experiment with the fastText implementation \cite{bojanowski2016enriching}
+    of the word2vec algorithms \cite{mikolov2013efficient}.
+    We take the context window size as the hyperparameter,
+    and syntactic interchangeability of words as the relation under investigation,
+    expressed by the part-of-speech (POS).
     
-    Word embedding models often start by extracting co-occurrences from a text
-    corpus, and then perform learning on the extracted co-occurrence matrix
-    (either by training a neural network to predict words based on their neighbors,
-    as in word2vec, or by performing some manipulation,
-    such as dimensionality reduction, to the co-occurrence matrix).
-    Co-occurrences are often extracted by finding, for each word token, all
-    words within a constant-size window around that word (or a randomly-sized
-    window up to a certain maximal size, as in word2vec).
-    The size of the window (or the maximal size)
-    is a hyperparameter referred to as the \textit{context window size}.
+    \paragraph{Context window size.}
+    Word embedding algorithms learn vector representations for words,
+    using co-occurrences from a text corpus,
+    based on the distributional hypothesis \cite{harris1954distributional}.
+    Co-occurrences are usually extracted by finding, for each word token, all
+    words within a constant-size window around that word (or a variably sized
+    window up to a certain maximum).
+    The size of the context window is a hyperparameter of the training algorithm,
+    referred to as the \textit{context window size}.
 
-    Our experiments reveal that context window size is negatively correlated
-    with the presence of same-POS words in the 50 nearest neighbors of words
-    according to an embedding model using that context window
-    size\footnote{Our code will be made available upon publication.}.
+    Our experiments\footnote{Our code will be made available upon publication.}
+    reveal that context window size is negatively correlated
+    with the number of same-POS words among the nearest neighbors of words.
     
     \section{Word Embedding Model}\label{sec:model}
     
