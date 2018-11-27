@@ -44,7 +44,7 @@ IBM Research\\
     We investigate the extent to which word embedding models
     preserve syntactic interchangeability, as reflected by distances between
     word vectors, and the effect of hyper-parameters---context window size in particular.
-    We use part-of-speech (POS) as a proxy for syntactic interchangeability,
+    We use part of speech (POS) as a proxy for syntactic interchangeability,
     as generally speaking, words with the same POS are syntactically valid in the same contexts.
     We also investigate the relationship between interchangeability
     and similarity as judged by commonly-used word similarity benchmarks,
@@ -70,7 +70,7 @@ IBM Research\\
     As a test case, we experiment with fastText \cite{bojanowski2016enriching}.
     We take the context window size as the hyper-parameter,
     and syntactic interchangeability of words as the relation under investigation,
-    expressed by the part-of-speech (POS).
+    expressed by the part of speech (POS).
     
     \paragraph{Context window size.}
     Word embedding algorithms learn vector representations for words,
@@ -101,6 +101,18 @@ IBM Research\\
     of related pairs in several common benchmarks (\S\ref{sec:data}).
     
     \section{Syntactic Interchangeability of Nearest Neighbors}\label{sec:nn}
+    
+    A word's part of speech (also known as syntactic category)
+    is determined by syntactic distribution, and
+    conveys information about how a word functions in the sentence \cite{carnie2002syntax}.
+    The most common parts of speech are nouns, verbs, and adjectives.
+    For each word in a sentence,
+    we can generally substitute various words that are of the same part of speech,
+    but not words that are of different parts of speech.
+    Syntactic distribution refers to what other words appear
+    near the word. For example, nouns typically appear after determiners (articles)
+    such as \textit{the}, although they need not do so to be nouns. We can thus
+    take appearance after \textit{the} to be a test for noun-hood.
     
     As a first experiment, we measure the proportion of same-POS words
     within the list of nearest neighbors for each word in our vocabulary.
@@ -181,11 +193,12 @@ IBM Research\\
     
     To calculate the similarity between words, we use cosine similarity
     between their corresponding vectors.
-    
+    	
     \subsection{Collecting Pivots}\label{sec:pivots}
     
     We create a word list for each of the three most
-    common parts of speech: nouns, adjectives and verbs.
+    common parts of speech:
+    nouns, adjectives and verbs\footnote{Our word lists will be released upon publication.}.
     For each POS, we list all lemmas of all synsets of that POS from
     WordNet \cite{miller1998wordnet}.
     To ``purify'' the lists and avoid noise from homonyms,
