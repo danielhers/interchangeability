@@ -143,7 +143,35 @@ IBM Research\\
     words with POS $x$.
     
     
-    \section{Experiments}\label{sec:experiments}
+    \section{Interchangeability in Word Pair Benchmarks}\label{sec:benchmarks}
+
+
+    \subsection{Relatedness Threshold}\label{sec:threshold}
+    
+    While all of these benchmarks assign a score along a scale to each pair
+    (calculated from human scoring), for our experiment we would like to use
+    a binary annotation of whether a pair is related or not.
+    For this purpose, we divide the whole range of scores,
+    for each benchmark, to three parts:
+    the lowest 30\% of the range between the lowest and highest scores
+    is considered ``unrelated'', the top 30\% as ``related'',
+    and the middle 40\% are ignored.
+    
+    \subsection{Benchmark Analysis}\label{benchmark_analysis}
+    
+    Given the binary classification obtained from the human-annotated scores
+    for each benchmark, we can find the enrichment of same-POS pairs among
+    related pairs.
+    Again, we use spaCy to annotate the POS for each word in each benchmark
+    pair (tagging them in isolation to select the most probably POS),
+    and look at the set of same-POS pairs in the benchmark.
+    For each of the benchmark, we calculated a p-value using the hypergeometric
+    test, comparing the enrichment of same-POS pairs within related pairs,
+    with a background of all related and unrelated pairs (ignoring ones in
+    the middle 40\% range of scores).
+    
+    
+    \section{Experiments}\label{sec:exp}
     
     \subsection{Data}\label{sec:data}
     We learn word embeddings from a corpus comprising all articles in English Wikipedia,
@@ -179,7 +207,7 @@ IBM Research\\
     To calculate the similarity between words, we use cosine similarity
     between their corresponding vectors.
     
-    \subsection{Results}\label{sec:nn_results}
+    \subsection{Nearest Neighbor Experiments}\label{sec:nn_exp}
     
     Figure~\ref{fig:nn_pos_hist} shows the results of this experiment.
     For nouns, adjectives and verbs, we consistently see a decrease in
@@ -316,40 +344,10 @@ IBM Research\\
 	    and p-value denoted as $p$ (two-tailed t-test).
 	    \label{fig:nn_pos_hist}}
 	\end{figure*}
-
-
-
-
     
     
-    \section{Interchangeability in Word Pair Benchmarks}\label{sec:benchmarks}
-
-
-    \subsection{Relatedness Threshold}\label{sec:threshold}
     
-    While all of these benchmarks assign a score along a scale to each pair
-    (calculated from human scoring), for our experiment we would like to use
-    a binary annotation of whether a pair is related or not.
-    For this purpose, we divide the whole range of scores,
-    for each benchmark, to three parts:
-    the lowest 30\% of the range between the lowest and highest scores
-    is considered ``unrelated'', the top 30\% as ``related'',
-    and the middle 40\% are ignored.
-    
-    \subsection{Benchmark Analysis}\label{benchmark_analysis}
-    
-    Given the binary classification obtained from the human-annotated scores
-    for each benchmark, we can find the enrichment of same-POS pairs among
-    related pairs.
-    Again, we use spaCy to annotate the POS for each word in each benchmark
-    pair (tagging them in isolation to select the most probably POS),
-    and look at the set of same-POS pairs in the benchmark.
-    For each of the benchmark, we calculated a p-value using the hypergeometric
-    test, comparing the enrichment of same-POS pairs within related pairs,
-    with a background of all related and unrelated pairs (ignoring ones in
-    the middle 40\% range of scores).
-    
-    \subsection{Results}\label{sec:benchmark_results}
+    \subsection{Word Similarity Benchmark Experiments}\label{sec:benchmark_exp}
     
     \begin{table}
     \begin{tabular}{l|c|cc|cc|c}
