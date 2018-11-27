@@ -86,20 +86,6 @@ IBM Research\\
     reveal that context window size is negatively correlated
     with the number of same-POS words among the nearest neighbors of words.
     
-    \paragraph{Relation to word similarity.}
-    
-    Many benchmarks have been proposed for the evaluation of unsupervised word
-    representations.
-    In general, they can be divided into intrinsic and extrinsic evaluation methods
-    \cite{schnabel2015evaluation,chiu2016intrinsic,jastrzebski2017evaluate,alshargi2018concept2vec,bakarov2018survey}.
-    While most datasets measure the semantic similarity between words,
-    many datasets actually capture semantic relatedness
-    \cite{hill2015simlex,avraham2016improving},
-    or more complex relations such as analogy or the ability to categorize
-    words based on the distributed representation encoded in word embeddings.
-    We focus on similarity and relatedness, and evaluate interchangeability
-    of related pairs in several common benchmarks (\S\ref{sec:data}).
-    
     \section{Syntactic Interchangeability of Nearest Neighbors}\label{sec:nn}
     
     A word's part of speech (also known as syntactic category)
@@ -128,16 +114,17 @@ IBM Research\\
     
     \section{Relation to Word Similarity Benchmarks}\label{sec:benchmarks}
     
-    Given the binary classification obtained from the human-annotated scores
-    for each benchmark, we can find the enrichment of same-POS pairs among
-    related pairs.
-    Again, we use spaCy to annotate the POS for each word in each benchmark
-    pair (tagging them in isolation to select the most probably POS),
-    and look at the set of same-POS pairs in the benchmark.
-    For each of the benchmark, we calculated a p-value using the hypergeometric
-    test, comparing the enrichment of same-POS pairs within related pairs,
-    with a background of all related and unrelated pairs (ignoring ones in
-    the middle 40\% range of scores).
+    Many benchmarks have been proposed for the evaluation of unsupervised word
+    representations.
+    In general, they can be divided into intrinsic and extrinsic evaluation methods
+    \cite{schnabel2015evaluation,chiu2016intrinsic,jastrzebski2017evaluate,alshargi2018concept2vec,bakarov2018survey}.
+    While most datasets measure the semantic similarity between words,
+    many datasets actually capture semantic relatedness
+    \cite{hill2015simlex,avraham2016improving},
+    or more complex relations such as analogy or the ability to categorize
+    words based on the distributed representation encoded in word embeddings.
+    We focus on similarity and relatedness, and evaluate interchangeability
+    of related pairs in several common benchmarks (\S\ref{sec:data}).
     
     
     \section{Experiments}\label{sec:exp}
@@ -268,6 +255,17 @@ IBM Research\\
     is considered ``unrelated'', the top 30\% as ``related'',
     and the middle 40\% are ignored.
     
+    Given the binary classification obtained from the human-annotated scores
+    for each benchmark, we can find the enrichment of same-POS pairs among
+    related pairs.
+    Again, we use spaCy to annotate the POS for each word in each benchmark
+    pair (tagging them in isolation to select the most probably POS),
+    and look at the set of same-POS pairs in the benchmark.
+    For each of the benchmark, we calculated a p-value using the hypergeometric
+    test, comparing the enrichment of same-POS pairs within related pairs,
+    with a background of all related and unrelated pairs (ignoring ones in
+    the middle 40\% range of scores).
+    
     Table~\ref{tab:benchmark_results} shows the results of this division.
     For WordSim353, MEN and MTurk287, the set of related pairs
     contains significantly more same-POS pairs than the background set.
@@ -275,7 +273,7 @@ IBM Research\\
     in SimVerb all words are verbs, and in SimLex every pair is of the same POS.
     The fact that not all pairs in these benchmarks are judged as same-POS
     in our experiment is due to ambiguity: for some words, spaCy selected a POS
-    which is not the one intended in constructing the benchmark. 
+    which is not the one intended in constructing the benchmark.
 
 \section{Discussion}\label{sec:discussion}
 
