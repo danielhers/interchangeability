@@ -100,7 +100,7 @@ IBM Research\\
     We focus on similarity and relatedness, and evaluate interchangeability
     of related pairs in several common benchmarks (\S\ref{sec:data}).
     
-    \section{Interchangeability in Nearest Neighbor Lists}\label{sec:nn}
+    \section{Syntactic Interchangeability of Nearest Neighbors}\label{sec:nn}
     
     As a first experiment, we measure the proportion of same-POS words
     within the list of nearest neighbors for each word in our vocabulary.
@@ -143,7 +143,7 @@ IBM Research\\
     words with POS $x$.
     
     
-    \section{Interchangeability in Word Pair Benchmarks}\label{sec:benchmarks}
+    \section{Relation to Word Similarity Benchmarks}\label{sec:benchmarks}
 
 
     \subsection{Relatedness Threshold}\label{sec:threshold}
@@ -349,7 +349,7 @@ IBM Research\\
     
     \subsection{Word Similarity Benchmark Experiments}\label{sec:benchmark_exp}
     
-    \begin{table}
+    \begin{table*}[ht]
     \begin{tabular}{l|c|cc|cc|c}
     \hline
     && \multicolumn{2}{c|}{\bf \# Related} & \multicolumn{2}{c|}{\bf \# Unrelated} & \\
@@ -368,7 +368,7 @@ IBM Research\\
     \caption{Analysis of interchangeability (by same-POS) in
     word similarity and relatedness benchmarks.
     \label{tab:benchmark_results}}
-    \end{table}
+    \end{table*}
     
     Table~\ref{tab:benchmark_results} shows the results of this experiment.
     For WordSim353, MEN and MTurk287, the set of related pairs
