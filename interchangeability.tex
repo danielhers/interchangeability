@@ -114,9 +114,15 @@ IBM Research\\
     such as \textit{the}, although they need not do so to be nouns. We can thus
     take appearance after \textit{the} to be a test for noun-hood.
     
-    As a first experiment, we measure the proportion of same-POS words
-    within the list of nearest neighbors for each word in our vocabulary.
-    
+    Therefore, to quantify syntactic interchangeability (or substitutability)
+    as a property of a word embedding model,
+    we measure the proportion of words with the same part of speech
+    within the list of nearest neighbors
+    (that is, the most similar words according to the model)
+    for each word in a pre-determined vocabulary.
+    The higher the same-POS ratio is in the list of nearest neighbors,
+    the more importance we assume the model implicitly places on syntactic interchangeability
+    for the calculation of word similarity.
     
     \subsection{Nearest Neighbor Analysis}\label{sec:nn_analysis}
     
