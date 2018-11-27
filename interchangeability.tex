@@ -124,16 +124,6 @@ IBM Research\\
     the more importance we assume the model implicitly places on syntactic interchangeability
     for the calculation of word similarity.
     
-    \subsection{Nearest Neighbor Analysis}\label{sec:nn_analysis}
-    
-    Using our pre-calculated nearest neighbor lists, we create, for each
-    POS, a list of word pairs: for each word in the corresponding pivot list,
-    we take its 50 nearest neighbors, and add each one along with the pivot word
-    as a (pivot, neighbor) pair.
-    
-    We subsequently calculate a histogram, for each POS $x$, of its
-    \textit{neighbor-POS} $y$, that is, the POS assigned to the neighbors of
-    words with POS $x$.
     
     
     \section{Relation to Word Similarity Benchmarks}\label{sec:benchmarks}
@@ -210,13 +200,29 @@ IBM Research\\
     To ``purify'' the lists and avoid noise from homonyms,
     we remove from each list any lemma that also belongs to a synset from
     another POS.
-    As a further cleaning step, we use spaCy\footnote{\url{https://spacy.io}}
-    to tag each word\footnote{Without context, spaCy will likely choose the most
-    common POS based on its training corpus, which is different from WordNet.},
+    As a further cleaning step, we use
+    spaCy 2.0.11\footnote{\url{https://spacy.io}} (with the \texttt{en\_core\_web\_sm} model)
+    to tag each word,
     and only keep words for which the spaCy POS agrees with the WordNet POS.
+    Without context, spaCy will likely choose the most
+    common POS based on its training corpus, which is different from WordNet.
     
     This process results in 6407 \textit{uniquely-noun}, 2784 \textit{uniquely-adjective}
     and 1460 \textit{uniquely-verb} words, which we refer to as our \textit{pivot lists}.
+    
+    \subsection{Nearest Neighbor Analysis}\label{sec:nn_analysis}
+    
+    For each word in our pivot lists, we calculate the 100 nearest neighbors
+    according to each learned word embedding model, filter these neighbors to
+    keep only words in the spaCy vocabulary.
+    Using our pre-calculated nearest neighbor lists, we create, for each
+    POS, a list of word pairs: for each word in the corresponding pivot list,
+    we take its 50 nearest neighbors, and add each one along with the pivot word
+    as a (pivot, neighbor) pair.
+    
+    We subsequently calculate a histogram, for each POS $x$, of its
+    \textit{neighbor-POS} $y$, that is, the POS assigned to the neighbors of
+    words with POS $x$.
     
     \subsection{Nearest Neighbor Experiments}\label{sec:nn_exp}
     
