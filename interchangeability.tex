@@ -9,7 +9,7 @@
 \usepackage{url}
 
 %\aclfinalcopy % Uncomment this line for the final submission
-%\def\aclpaperid{***} %  Enter the acl Paper ID here
+\def\aclpaperid{199} %  Enter the acl Paper ID here
 
 %\setlength\titlebox{5cm}
 % You can expand the titlebox if you need extra space
@@ -127,20 +127,6 @@ IBM Research\\
     
     
     \section{Relation to Word Similarity Benchmarks}\label{sec:benchmarks}
-
-
-    \subsection{Relatedness Threshold}\label{sec:threshold}
-    
-    While all of these benchmarks assign a score along a scale to each pair
-    (calculated from human scoring), for our experiment we would like to use
-    a binary annotation of whether a pair is related or not.
-    For this purpose, we divide the whole range of scores,
-    for each benchmark, to three parts:
-    the lowest 30\% of the range between the lowest and highest scores
-    is considered ``unrelated'', the top 30\% as ``related'',
-    and the middle 40\% are ignored.
-    
-    \subsection{Benchmark Analysis}\label{benchmark_analysis}
     
     Given the binary classification obtained from the human-annotated scores
     for each benchmark, we can find the enrichment of same-POS pairs among
@@ -164,20 +150,6 @@ IBM Research\\
     extracting text, removing nonalphanumeric characters,
     converting digits to text, and lowercasing the text.
     
-    To measure semantic word similarity, we use the following benchmarks:
-    \begin{itemize}
-        \item MTurk-287~\cite{radinsky2011word}
-        \item MTurk-771~\cite{halawi2012large}
-        \item WordSim-353~\cite{finkelstein2001placing}
-        \item RG65~\cite{rubenstein1965contextual}
-        \item Rare Word~\cite{luong2013better}
-        \item SimLex999~\cite{hill2015simlex}
-        \item WordSim-353-Sim~\cite{agirre2009study}
-        \item WordSim-353-Rel~\cite{zesch2008using}
-        \item SimVerb-3500~\cite{Gerz2016emnlp}
-        \item MEN~\cite{bruni2012distributional}
-    \end{itemize}
-    
     \subsection{Hyper-parameters}\label{sec:hyperparams}
     We use fastText \cite{bojanowski2016enriching} to learn
     300-dimensional word embedding models,
@@ -189,8 +161,10 @@ IBM Research\\
     
     To calculate the similarity between words, we use cosine similarity
     between their corresponding vectors.
+    
+    \subsection{Nearest Neighbor Analysis}\label{sec:nn_exp}
     	
-    \subsection{Collecting Pivots}\label{sec:pivots}
+    \paragraph{Collecting pivots.}
     
     We create a word list for each of the three most
     common parts of speech:
@@ -211,7 +185,7 @@ IBM Research\\
     This process results in 6407 \textit{uniquely-noun}, 2784 \textit{uniquely-adjective}
     and 1460 \textit{uniquely-verb} words, which we refer to as our \textit{pivot lists}.
     
-    \subsection{Nearest Neighbor Analysis}\label{sec:nn_exp}
+    \paragraph{Calculating nearest neighbor POS.}
     
     For each word in our pivot lists, we calculate the 100 nearest neighbors
     according to each learned word embedding model, filter these neighbors to
@@ -220,14 +194,6 @@ IBM Research\\
     We subsequently calculate a histogram, for each POS $x$, of its
     \textit{neighbor-POS} $y$, that is, the POS assigned to the neighbors of
     words with POS $x$.
-    
-    Figure~\ref{fig:nn_pos_hist} shows the results of this experiment.
-    For nouns, adjectives and verbs, we consistently see a decrease in
-    the number of same-POS neighbors when we increase the window size,
-    while other neighbors are increasing or unaffected.
-    The Pearson correlations of the window size with the number of same-POS
-    neighbors are -0.96, -0.93 and -0.91 for nouns, adjectives and verbs respectively,
-    with $p<0.01$ (two-tailed t-test).
     
     \begin{figure*}[ht]
         \includegraphics[width=\textwidth]{figs/NOUN_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
@@ -239,11 +205,38 @@ IBM Research\\
 	    \label{fig:nn_pos_hist}}
 	\end{figure*}
     
+    \paragraph{Results.}
+    
+    Figure~\ref{fig:nn_pos_hist} shows the results of this experiment.
+    For nouns, adjectives and verbs, we consistently see a decrease in
+    the number of same-POS neighbors when we increase the window size,
+    while other neighbors are increasing or unaffected.
+    The Pearson correlations of the window size with the number of same-POS
+    neighbors are $-0.96$, $-0.93$ and $-0.91$ for nouns, adjectives and verbs respectively,
+    with $p<0.01$ (two-tailed t-test).
+    
     
     
     \subsection{Word Similarity Benchmark Experiments}\label{sec:benchmark_exp}
     
+    \paragraph{Word similarity benchmarks.}
+    
+    To measure semantic word similarity, we use the following benchmarks:
+    \begin{itemize}
+        \item WordSim-353~\cite{finkelstein2001placing}
+        \item WordSim-353-Sim~\cite{agirre2009study}
+        \item WordSim-353-Rel~\cite{zesch2008using}
+        \item SimLex999~\cite{hill2015simlex}
+        \item Rare Word~\cite{luong2013better}
+        \item MEN~\cite{bruni2012distributional}
+        \item MTurk-287~\cite{radinsky2011word}
+        \item MTurk-771~\cite{halawi2012large}
+        \item SimVerb-3500~\cite{Gerz2016emnlp}
+    \end{itemize}
+    See Table~\ref{tab:benchmark_results} for the size of each benchmark.
+    
     \begin{table*}[ht]
+    \centering
     \begin{tabular}{l|c|cc|cc|c}
     \hline
     && \multicolumn{2}{c|}{\bf \# Related} & \multicolumn{2}{c|}{\bf \# Unrelated} & \\
@@ -263,16 +256,26 @@ IBM Research\\
     word similarity and relatedness benchmarks.
     \label{tab:benchmark_results}}
     \end{table*}
+
+    \paragraph{Relatedness threshold.}
     
-    Table~\ref{tab:benchmark_results} shows the results of this experiment.
+    While all of these benchmarks assign a score along a scale to each pair
+    (calculated from human scoring), for our experiment we would like to use
+    a binary annotation of whether a pair is related or not.
+    For this purpose, we divide the whole range of scores,
+    for each benchmark, to three parts:
+    the lowest 30\% of the range between the lowest and highest scores
+    is considered ``unrelated'', the top 30\% as ``related'',
+    and the middle 40\% are ignored.
+    
+    Table~\ref{tab:benchmark_results} shows the results of this division.
     For WordSim353, MEN and MTurk287, the set of related pairs
     contains significantly more same-POS pairs than the background set.
-    
     In SimLex999 and in SimVerb3500, all pairs are same-POS by design:
     in SimVerb all words are verbs, and in SimLex every pair is of the same POS.
     The fact that not all pairs in these benchmarks are judged as same-POS
     in our experiment is due to ambiguity: for some words, spaCy selected a POS
-    which is not the one intended in constructing the benchmark.    
+    which is not the one intended in constructing the benchmark. 
 
 \section{Discussion}\label{sec:discussion}
 
