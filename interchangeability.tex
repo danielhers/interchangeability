@@ -126,6 +126,15 @@ IBM Research\\
     We focus on similarity and relatedness, and evaluate interchangeability
     of related pairs in several common benchmarks (\S\ref{sec:data}).
     
+    \begin{figure*}[ht]
+        \includegraphics[width=\textwidth]{figs/NOUN_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
+        \includegraphics[width=\textwidth]{figs/ADJ_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
+        \includegraphics[width=\textwidth]{figs/VERB_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
+	    \caption{Number of neighbor per POS for each pivot POS and for each window size.
+	    The number of same-POS neighbors is consistently decreasing with window size.
+	    \label{fig:nn_pos_hist}}
+	\end{figure*}
+    
     
     \section{Experiments}\label{sec:exp}
     
@@ -140,7 +149,7 @@ IBM Research\\
     \subsection{Hyper-parameters}\label{sec:hyperparams}
     We use fastText \cite{bojanowski2016enriching} to learn
     300-dimensional word embedding models,
-    using both the SGNS and CBOW algorithms \cite{mikolov2013efficient}.
+    using the CBOW algorithm \cite{mikolov2013efficient}.
     The context window size varies from 1 up to 15.
     We set the minimal word occurrence count to 500, to avoid
     very rare words or uncommon spelling errors from skewing the results.
@@ -182,16 +191,6 @@ IBM Research\\
     \textit{neighbor-POS} $y$, that is, the POS assigned to the neighbors of
     words with POS $x$.
     
-    \begin{figure*}[ht]
-        \includegraphics[width=\textwidth]{figs/NOUN_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
-        \includegraphics[width=\textwidth]{figs/ADJ_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
-        \includegraphics[width=\textwidth]{figs/VERB_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
-	    \caption{Number of neighbor per POS for each pivot POS and for each window size,
-	    for the CBOW model.
-	    The number of same-POS neighbors is consistently decreasing with window size.
-	    \label{fig:nn_pos_hist}}
-	\end{figure*}
-    
     \paragraph{Results.}
     
     Figure~\ref{fig:nn_pos_hist} shows the results of this experiment.
@@ -201,26 +200,6 @@ IBM Research\\
     The Pearson correlations of the window size with the number of same-POS
     neighbors are $-0.96$, $-0.93$ and $-0.91$ for nouns, adjectives and verbs respectively,
     with $p<0.01$ (two-tailed t-test).
-    
-    
-    
-    \subsection{Word Similarity Benchmark Experiments}\label{sec:benchmark_exp}
-    
-    \paragraph{Word similarity benchmarks.}
-    
-    To measure semantic word similarity, we use the following benchmarks:
-    \begin{itemize}
-        \item WordSim-353~\cite{finkelstein2001placing}
-        \item WordSim-353-Sim~\cite{agirre2009study}
-        \item WordSim-353-Rel~\cite{zesch2008using}
-        \item SimLex999~\cite{hill2015simlex}
-        \item Rare Word~\cite{luong2013better}
-        \item MEN~\cite{bruni2012distributional}
-        \item MTurk-287~\cite{radinsky2011word}
-        \item MTurk-771~\cite{halawi2012large}
-        \item SimVerb-3500~\cite{Gerz2016emnlp}
-    \end{itemize}
-    See Table~\ref{tab:benchmark_results} for the size of each benchmark.
     
     \begin{table*}[ht]
     \centering
@@ -243,6 +222,33 @@ IBM Research\\
     word similarity and relatedness benchmarks.
     \label{tab:benchmark_results}}
     \end{table*}
+    
+    
+    
+    \subsection{Word Similarity Benchmark Experiments}\label{sec:benchmark_exp}
+    
+    \paragraph{Word similarity benchmarks.}
+    
+    To measure semantic word similarity, we use the following benchmarks:
+    \begin{itemize}
+        \item WordSim-353~\cite{finkelstein2001placing}
+        \item WordSim-353-Sim~\cite{agirre2009study}
+        \item WordSim-353-Rel~\cite{zesch2008using}
+        \item SimLex999~\cite{hill2015simlex}
+        \item Rare Word~\cite{luong2013better}
+        \item MEN~\cite{bruni2012distributional}
+        \item MTurk-287~\cite{radinsky2011word}
+        \item MTurk-771~\cite{halawi2012large}
+        \item SimVerb-3500~\cite{Gerz2016emnlp}
+    \end{itemize}
+    See Table~\ref{tab:benchmark_results} for the size of each benchmark.
+    
+    \begin{figure*}[ht]
+        \includegraphics[width=\textwidth]{figs/distances_fasttext_enwiki-20170501-clean_cbow-300d-min500_eval.png}
+	    \caption{Pearson correlation between benchmark score and word embedding cosing similarity,
+	    for each benchmark and window size.
+	    \label{fig:nn_pos_hist}}
+	\end{figure*}
 
     \paragraph{Relatedness threshold.}
     
@@ -274,6 +280,17 @@ IBM Research\\
     The fact that not all pairs in these benchmarks are judged as same-POS
     in our experiment is due to ambiguity: for some words, spaCy selected a POS
     which is not the one intended in constructing the benchmark.
+    
+    \paragraph{Relation to window size.}
+    
+    To investigate the effect of window size on a model's performance on the benchmark
+    datasets, we evaluate each model on each benchmark, again using cosine similarity
+    as the model's prediction for each pair.
+    Interestingly, we see a positive correlation of window size with model's performance
+    for WordSim353, WordSim353-R, MEN, MTurk287, and MTurk771 (with $p<0.01$; two-tailed t-test).
+    For SimLex999, we see a negative correlation instead ($p<0.01$).
+    
+    
 
 \section{Discussion}\label{sec:discussion}
 
