@@ -26,6 +26,7 @@
 \usepackage{nicefrac}       % compact symbols for 1/2, etc.
 \usepackage{microtype}      % microtypography
 \usepackage{pgfplots,pgfplotstable}
+\usepackage{subcaption}
 
 \title{Syntactic Interchangeability in Word Embedding Models}
 
@@ -79,12 +80,31 @@ IBM Research\\
     Co-occurrences are usually extracted by finding, for each word token, all
     words within a constant-size window around that word (or a variably sized
     window up to a certain maximum).
-    The size of the context window is a hyper-parameter of the training algorithm,
-    referred to as the \textit{context window size}.
+    The size of the context window is a hyper-parameter of the training algorithm.
+%    referred to as the \textit{context window size}.
 
     Our experiments\footnote{Our code will be made available upon publication.}
     reveal that context window size is negatively correlated
     with the number of same-POS words among the nearest neighbors of words.
+    
+    \begin{figure*}[ht]
+        \begin{subfigure}[b]{\columnwidth}
+        \includegraphics[width=\columnwidth]{figs/NOUN_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
+        \includegraphics[width=\columnwidth]{figs/ADJ_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
+        \includegraphics[width=\columnwidth]{figs/VERB_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
+	    \caption{CBOW}
+        \end{subfigure}
+        \begin{subfigure}[b]{\columnwidth}
+        \includegraphics[width=\columnwidth]{figs/NOUN_nn_100_fasttext_enwiki-20170501-clean_skipgram-300d-min500_pos.png}
+        \includegraphics[width=\columnwidth]{figs/ADJ_nn_100_fasttext_enwiki-20170501-clean_skipgram-300d-min500_pos.png}
+        \includegraphics[width=\columnwidth]{figs/VERB_nn_100_fasttext_enwiki-20170501-clean_skipgram-300d-min500_pos.png}
+	    \caption{SGNS}
+        \end{subfigure}
+	    \caption{Number of neighbor per POS for each pivot POS and for each window size,
+	    for the CBOW~(a) and SGNS~(b) algorithms.
+	    The number of same-POS neighbors is consistently decreasing with window size.
+	    \label{fig:nn_pos_hist}}
+	\end{figure*}
     
     \section{Syntactic Interchangeability of Nearest Neighbors}\label{sec:nn}
     
@@ -126,14 +146,27 @@ IBM Research\\
     We focus on similarity and relatedness, and evaluate interchangeability
     of related pairs in several common benchmarks (\S\ref{sec:data}).
     
-    \begin{figure}[ht]
-        \includegraphics[width=\columnwidth]{figs/NOUN_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
-        \includegraphics[width=\columnwidth]{figs/ADJ_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
-        \includegraphics[width=\columnwidth]{figs/VERB_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
-	    \caption{Number of neighbor per POS for each pivot POS and for each window size.
-	    The number of same-POS neighbors is consistently decreasing with window size.
-	    \label{fig:nn_pos_hist}}
-	\end{figure}
+    \begin{table*}[ht]
+    \centering
+    \begin{tabular}{l|c|cc|cc|c}
+    \hline
+    && \multicolumn{2}{c|}{\bf \# Related} & \multicolumn{2}{c|}{\bf \# Unrelated} & \\
+    \bf Benchmark & \bf Size & \bf All & \bf Same-POS & \bf All & \bf Same-POS & \bf p-value \\
+    \hline
+	WordSim353 & 353 & 122 & 107 & 53 & 40 & 0.038 \\
+    WordSim353-S & 203 & 60 & 53 & 53 & 40 & 0.061 \\
+    WordSim353-R & 252 & 104 & 89 & 39 & 31 & 0.26 \\
+    SimLex999 & 999 & 234 & 199 & 334 & 295 & 0.897 \\
+    RW & 2034 & 944 & 555 & 262 & 144 & 0.149 \\
+    MEN & 3000 & 791 & 564 & 781 & 439 & $3\cdot10^{-10}$ \\
+    MTurk287 & 287 & 49 & 39 & 119 & 68 & 0.004 \\
+    MTurk771 & 771 & 204 & 153 & 200 & 146 & 0.365 \\
+    SimVerb3500 & 3500 & 633 & 265 & 1217 & 566 & 0.974
+    \end{tabular}
+    \caption{Analysis of interchangeability (by same-POS) in
+    word similarity and relatedness benchmarks.
+    \label{tab:benchmark_results}}
+    \end{table*}
     
     
     \section{Experiments}\label{sec:exp}
@@ -149,12 +182,11 @@ IBM Research\\
     \subsection{Hyper-parameters}\label{sec:hyperparams}
     We use fastText \cite{bojanowski2016enriching} to learn
     300-dimensional word embedding models,
-    using the CBOW algorithm \cite{mikolov2013efficient}.
+    using both the CBOW and SGNS algorithms \cite{mikolov2013efficient}.
     The context window size varies from 1 up to 15.
     We set the minimal word occurrence count to 500, to avoid
     very rare words or uncommon spelling errors from skewing the results.
     All other hyper-parameters are set to their default values.
-    
     To calculate the similarity between words, we use cosine similarity
     between their corresponding vectors.
     
@@ -201,27 +233,19 @@ IBM Research\\
     neighbors are $-0.96$, $-0.93$ and $-0.91$ for nouns, adjectives and verbs respectively,
     with $p<0.01$ (two-tailed t-test).
     
-    \begin{table*}[ht]
-    \centering
-    \begin{tabular}{l|c|cc|cc|c}
-    \hline
-    && \multicolumn{2}{c|}{\bf \# Related} & \multicolumn{2}{c|}{\bf \# Unrelated} & \\
-    \bf Benchmark & \bf Size & \bf All & \bf Same-POS & \bf All & \bf Same-POS & \bf p-value \\
-    \hline
-	WordSim353 & 353 & 122 & 107 & 53 & 40 & 0.038 \\
-    WordSim353-S & 203 & 60 & 53 & 53 & 40 & 0.061 \\
-    WordSim353-R & 252 & 104 & 89 & 39 & 31 & 0.26 \\
-    SimLex999 & 999 & 234 & 199 & 334 & 295 & 0.897 \\
-    RW & 2034 & 944 & 555 & 262 & 144 & 0.149 \\
-    MEN & 3000 & 791 & 564 & 781 & 439 & $3\cdot10^{-10}$ \\
-    MTurk287 & 287 & 49 & 39 & 119 & 68 & 0.004 \\
-    MTurk771 & 771 & 204 & 153 & 200 & 146 & 0.365 \\
-    SimVerb3500 & 3500 & 633 & 265 & 1217 & 566 & 0.974
-    \end{tabular}
-    \caption{Analysis of interchangeability (by same-POS) in
-    word similarity and relatedness benchmarks.
-    \label{tab:benchmark_results}}
-    \end{table*}
+    \begin{figure*}[ht]
+        \begin{subfigure}[b]{\columnwidth}
+        \includegraphics[width=\columnwidth]{figs/similarities_fasttext_enwiki-20170501-clean_cbow-300d-min500_eval.png}
+        \caption{CBOW}
+        \end{subfigure}
+        \begin{subfigure}[b]{\columnwidth}
+        \includegraphics[width=\columnwidth]{figs/similarities_fasttext_enwiki-20170501-clean_skipgram-300d-min500_eval.png}
+        \caption{SGNS}
+        \end{subfigure}
+	    \caption{Pearson correlation between benchmark score and word embedding cosine similarity,
+	    for the CBOW~(a) and SGNS~(b) algorithms, and for each benchmark and window size.
+	    \label{fig:benchmark_correlation}}
+	\end{figure*}
     
     
     
@@ -230,25 +254,27 @@ IBM Research\\
     \paragraph{Word similarity benchmarks.}
     
     To measure semantic word similarity, we use the following benchmarks:
-    \begin{itemize}
-        \item WordSim-353~\cite{finkelstein2001placing}
-        \item WordSim-353-Sim~\cite{agirre2009study}
-        \item WordSim-353-Rel~\cite{zesch2008using}
-        \item SimLex999~\cite{hill2015simlex}
-        \item Rare Word~\cite{luong2013better}
-        \item MEN~\cite{bruni2012distributional}
-        \item MTurk-287~\cite{radinsky2011word}
-        \item MTurk-771~\cite{halawi2012large}
-        \item SimVerb-3500~\cite{Gerz2016emnlp}
-    \end{itemize}
+%    \begin{itemize}
+%        \item WordSim-353~\cite{finkelstein2001placing}
+%        \item WordSim-353-Sim~\cite{agirre2009study}
+%        \item WordSim-353-Rel~\cite{zesch2008using}
+%        \item SimLex999~\cite{hill2015simlex}
+%        \item Rare Word~\cite{luong2013better}
+%        \item MEN~\cite{bruni2012distributional}
+%        \item MTurk-287~\cite{radinsky2011word}
+%        \item MTurk-771~\cite{halawi2012large}
+%        \item SimVerb-3500~\cite{Gerz2016emnlp}
+%    \end{itemize}
+     WordSim-353~\cite{finkelstein2001placing} and its partition into
+     WordSim-353-Sim~\cite{agirre2009study} and
+     WordSim-353-Rel~\cite{zesch2008using},
+     SimLex999~\cite{hill2015simlex},
+     Rare Words~\cite[RW; ][]{luong2013better},
+     MEN~\cite{bruni2012distributional},
+     MTurk-287~\cite{radinsky2011word},
+     MTurk-771~\cite{halawi2012large}, and
+     SimVerb-3500~\cite{Gerz2016emnlp}.
     See Table~\ref{tab:benchmark_results} for the size of each benchmark.
-    
-    \begin{figure}[ht]
-        \includegraphics[width=\columnwidth]{figs/similarities_fasttext_enwiki-20170501-clean_cbow-300d-min500_eval.png}
-	    \caption{Pearson correlation between benchmark score and word embedding cosine similarity,
-	    for each benchmark and window size.
-	    \label{fig:benchmark_correlation}}
-	\end{figure}
 
     \paragraph{Relatedness threshold.}
     
