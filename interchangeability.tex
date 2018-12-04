@@ -27,6 +27,7 @@
 \usepackage{microtype}      % microtypography
 \usepackage{pgfplots,pgfplotstable}
 \usepackage{subcaption}
+\usepackage{multirow}
 
 \title{Syntactic Interchangeability in Word Embedding Models}
 
@@ -87,24 +88,24 @@ IBM Research\\
     reveal that context window size is negatively correlated
     with the number of same-POS words among the nearest neighbors of words.
     
-    \begin{figure*}[ht]
-        \begin{subfigure}[b]{\columnwidth}
-        \includegraphics[width=\columnwidth]{figs/NOUN_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
-        \includegraphics[width=\columnwidth]{figs/ADJ_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
-        \includegraphics[width=\columnwidth]{figs/VERB_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
-	    \caption{CBOW}
-        \end{subfigure}
-        \begin{subfigure}[b]{\columnwidth}
-        \includegraphics[width=\columnwidth]{figs/NOUN_nn_100_fasttext_enwiki-20170501-clean_skipgram-300d-min500_pos.png}
-        \includegraphics[width=\columnwidth]{figs/ADJ_nn_100_fasttext_enwiki-20170501-clean_skipgram-300d-min500_pos.png}
-        \includegraphics[width=\columnwidth]{figs/VERB_nn_100_fasttext_enwiki-20170501-clean_skipgram-300d-min500_pos.png}
-	    \caption{SGNS}
-        \end{subfigure}
-	    \caption{Number of neighbor per POS for each pivot POS and for each window size,
-	    for the CBOW~(a) and SGNS~(b) algorithms.
-	    The number of same-POS neighbors is consistently decreasing with window size.
-	    \label{fig:nn_pos_hist}}
-	\end{figure*}
+%    \begin{figure*}[ht]
+%        \begin{subfigure}[b]{\columnwidth}
+%        \includegraphics[width=\columnwidth]{figs/NOUN_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
+%        \includegraphics[width=\columnwidth]{figs/ADJ_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
+%        \includegraphics[width=\columnwidth]{figs/VERB_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
+%	    \caption{CBOW}
+%        \end{subfigure}
+%        \begin{subfigure}[b]{\columnwidth}
+%        \includegraphics[width=\columnwidth]{figs/NOUN_nn_100_fasttext_enwiki-20170501-clean_skipgram-300d-min500_pos.png}
+%        \includegraphics[width=\columnwidth]{figs/ADJ_nn_100_fasttext_enwiki-20170501-clean_skipgram-300d-min500_pos.png}
+%        \includegraphics[width=\columnwidth]{figs/VERB_nn_100_fasttext_enwiki-20170501-clean_skipgram-300d-min500_pos.png}
+%	    \caption{SGNS}
+%        \end{subfigure}
+%	    \caption{Number of neighbor per POS for each pivot POS and for each window size,
+%	    for the CBOW~(a) and SGNS~(b) algorithms.
+%	    The number of same-POS neighbors is consistently decreasing with window size.
+%	    \label{fig:nn_pos_hist}}
+%	\end{figure*}
     
     \section{Syntactic Interchangeability of Nearest Neighbors}\label{sec:nn}
     
@@ -145,28 +146,6 @@ IBM Research\\
     words based on the distributed representation encoded in word embeddings.
     We focus on similarity and relatedness, and evaluate interchangeability
     of related pairs in several common benchmarks (\S\ref{sec:data}).
-    
-    \begin{table*}[ht]
-    \centering
-    \begin{tabular}{l|c|cc|cc|c}
-    \hline
-    && \multicolumn{2}{c|}{\bf \# Related} & \multicolumn{2}{c|}{\bf \# Unrelated} & \\
-    \bf Benchmark & \bf Size & \bf All & \bf Same-POS & \bf All & \bf Same-POS & \bf p-value \\
-    \hline
-	WordSim353 & 353 & 122 & 107 & 53 & 40 & 0.038 \\
-    WordSim353-S & 203 & 60 & 53 & 53 & 40 & 0.061 \\
-    WordSim353-R & 252 & 104 & 89 & 39 & 31 & 0.26 \\
-    SimLex999 & 999 & 234 & 199 & 334 & 295 & 0.897 \\
-    RW & 2034 & 944 & 555 & 262 & 144 & 0.149 \\
-    MEN & 3000 & 791 & 564 & 781 & 439 & $3\cdot10^{-10}$ \\
-    MTurk287 & 287 & 49 & 39 & 119 & 68 & 0.004 \\
-    MTurk771 & 771 & 204 & 153 & 200 & 146 & 0.365 \\
-    SimVerb3500 & 3500 & 633 & 265 & 1217 & 566 & 0.974
-    \end{tabular}
-    \caption{Analysis of interchangeability (by same-POS) in
-    word similarity and relatedness benchmarks.
-    \label{tab:benchmark_results}}
-    \end{table*}
     
     
     \section{Experiments}\label{sec:exp}
@@ -223,17 +202,58 @@ IBM Research\\
     \textit{neighbor-POS} $y$, that is, the POS assigned to the neighbors of
     words with POS $x$.
     
+    \begin{table}[t]
+    \centering
+    \setlength\tabcolsep{2.75pt}
+    \begin{tabular}{l|ccc|ccc|ccc}
+    \multirow{2}{1cm}{\bf Algorihtm}
+    & \multicolumn{3}{c|}{\bf NOUN} & \multicolumn{3}{c|}{\bf ADJ} & \multicolumn{3}{c}{\bf VERB} \\
+    & 1 & 15 & r & 1 & 15 & r & 1 & 15 & r \\
+    \hline
+	CBOW & 79 & 70 & -0.96 & 72 & 48 & -0.93 & 55 & 41 & -0.91 \\
+	SGNS & 78 & 67 & -0.96 & 66 & 41 & -0.96 & 51 & 42 & -0.93 
+    \end{tabular}
+    \caption{Percentage of same-POS neighbors per pivot POS for the smallest (1) and largest (15)
+        window sizes in our experiments, for the CBOW and SGNS algorithms.
+	    The number of same-POS neighbors is significantly decreasing ($p<0.01$, two-tailed t-test)
+	    with window size, according to the Pearson correlation (r).
+    \label{tab:nn_pos_hist}}
+    \end{table}
+    
     \paragraph{Results.}
     
-    Figure~\ref{fig:nn_pos_hist} shows the results of this experiment.
+    Table~\ref{tab:nn_pos_hist} shows the results of this experiment.
     For nouns, adjectives and verbs, we consistently see a decrease in
     the number of same-POS neighbors when we increase the window size,
     while other neighbors are increasing or unaffected.
-    The Pearson correlations of the window size with the number of same-POS
-    neighbors are $-0.96$, $-0.93$ and $-0.91$ for nouns, adjectives and verbs respectively,
-    with $p<0.01$ (two-tailed t-test).
+%    The Pearson correlations of the window size with the number of same-POS
+%    neighbors are $-0.96$, $-0.93$ and $-0.91$ for nouns, adjectives and verbs respectively,
+%    with $p<0.01$ (two-tailed t-test).
     
-    \begin{figure*}[ht]
+    
+    
+    \begin{table*}[t]
+    \centering
+    \begin{tabular}{l|c|cc|cc|c}
+    && \multicolumn{2}{c|}{\bf \# Related} & \multicolumn{2}{c|}{\bf \# Unrelated} & \\
+    \bf Benchmark & \bf Size & \bf All & \bf Same-POS & \bf All & \bf Same-POS & \bf p-value \\
+    \hline
+	WordSim353 & 353 & 122 & 107 & 53 & 40 & 0.038 \\
+    WordSim353-S & 203 & 60 & 53 & 53 & 40 & 0.061 \\
+    WordSim353-R & 252 & 104 & 89 & 39 & 31 & 0.26 \\
+    SimLex999 & 999 & 234 & 199 & 334 & 295 & 0.897 \\
+    RW & 2034 & 944 & 555 & 262 & 144 & 0.149 \\
+    MEN & 3000 & 791 & 564 & 781 & 439 & $3\cdot10^{-10}$ \\
+    MTurk287 & 287 & 49 & 39 & 119 & 68 & 0.004 \\
+    MTurk771 & 771 & 204 & 153 & 200 & 146 & 0.365 \\
+    SimVerb3500 & 3500 & 633 & 265 & 1217 & 566 & 0.974
+    \end{tabular}
+    \caption{Analysis of interchangeability (by same-POS) in
+    word similarity and relatedness benchmarks.
+    \label{tab:benchmark_results}}
+    \end{table*}
+    
+    \begin{figure*}[t]
         \begin{subfigure}[b]{\columnwidth}
         \includegraphics[width=\columnwidth]{figs/similarities_fasttext_enwiki-20170501-clean_cbow-300d-min500_eval.png}
         \caption{CBOW}
@@ -246,8 +266,6 @@ IBM Research\\
 	    for the CBOW~(a) and SGNS~(b) algorithms, and for each benchmark and window size.
 	    \label{fig:benchmark_correlation}}
 	\end{figure*}
-    
-    
     
     \subsection{Word Similarity Benchmark Experiments}\label{sec:benchmark_exp}
     
