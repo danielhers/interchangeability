@@ -126,14 +126,14 @@ IBM Research\\
     We focus on similarity and relatedness, and evaluate interchangeability
     of related pairs in several common benchmarks (\S\ref{sec:data}).
     
-    \begin{figure*}[ht]
-        \includegraphics[width=\textwidth]{figs/NOUN_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
-        \includegraphics[width=\textwidth]{figs/ADJ_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
-        \includegraphics[width=\textwidth]{figs/VERB_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
+    \begin{figure}[ht]
+        \includegraphics[width=\columnwidth]{figs/NOUN_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
+        \includegraphics[width=\columnwidth]{figs/ADJ_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
+        \includegraphics[width=\columnwidth]{figs/VERB_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
 	    \caption{Number of neighbor per POS for each pivot POS and for each window size.
 	    The number of same-POS neighbors is consistently decreasing with window size.
 	    \label{fig:nn_pos_hist}}
-	\end{figure*}
+	\end{figure}
     
     
     \section{Experiments}\label{sec:exp}
@@ -243,12 +243,12 @@ IBM Research\\
     \end{itemize}
     See Table~\ref{tab:benchmark_results} for the size of each benchmark.
     
-    \begin{figure*}[ht]
-        \includegraphics[width=\textwidth]{figs/distances_fasttext_enwiki-20170501-clean_cbow-300d-min500_eval.png}
+    \begin{figure}[ht]
+        \includegraphics[width=\columnwidth]{figs/distances_fasttext_enwiki-20170501-clean_cbow-300d-min500_eval.png}
 	    \caption{Pearson correlation between benchmark score and word embedding cosing similarity,
 	    for each benchmark and window size.
 	    \label{fig:nn_pos_hist}}
-	\end{figure*}
+	\end{figure}
 
     \paragraph{Relatedness threshold.}
     
