@@ -242,7 +242,7 @@ IBM Research\\
         \includegraphics[width=\columnwidth]{figs/similarities_fasttext_enwiki-20170501-clean_skipgram-300d-min500_eval.png}
         \caption{SGNS}
         \end{subfigure}
-	    \caption{Pearson correlation between benchmark score and word embedding cosine similarity,
+	    \caption{Spearman correlation between benchmark score and word embedding cosine similarity,
 	    for the CBOW~(a) and SGNS~(b) algorithms, and for each benchmark and window size.
 	    \label{fig:benchmark_correlation}}
 	\end{figure*}
@@ -316,7 +316,7 @@ IBM Research\\
     in our experiment is due to ambiguity: for some words, spaCy selected a POS
     which is not the one intended in constructing the benchmark.
     
-    Figure~\ref{fig:benchmark_correlation} displays the Pearson correlation
+    Figure~\ref{fig:benchmark_correlation} displays the Spearman correlation
     between the benchmark score and word embedding cosine similarity,
     for each benchmark and window size.
     Interestingly, we see a positive correlation of window size with model's performance
