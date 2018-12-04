@@ -245,9 +245,9 @@ IBM Research\\
     
     \begin{figure}[ht]
         \includegraphics[width=\columnwidth]{figs/distances_fasttext_enwiki-20170501-clean_cbow-300d-min500_eval.png}
-	    \caption{Pearson correlation between benchmark score and word embedding cosing similarity,
+	    \caption{Pearson correlation between benchmark score and word embedding cosine similarity,
 	    for each benchmark and window size.
-	    \label{fig:nn_pos_hist}}
+	    \label{fig:benchmark_correlation}}
 	\end{figure}
 
     \paragraph{Relatedness threshold.}
@@ -267,12 +267,21 @@ IBM Research\\
     Again, we use spaCy to annotate the POS for each word in each benchmark
     pair (tagging them in isolation to select the most probably POS),
     and look at the set of same-POS pairs in the benchmark.
-    For each of the benchmark, we calculated a p-value using the hypergeometric
+    For each of the benchmark, we calculate a p-value using the hypergeometric
     test, comparing the enrichment of same-POS pairs within related pairs,
     with a background of all related and unrelated pairs (ignoring ones in
     the middle 40\% range of scores).
     
-    Table~\ref{tab:benchmark_results} shows the results of this division.
+    \paragraph{Relation to window size.}
+    
+    To investigate the effect of window size on a model's performance on the benchmarks,
+    we evaluate each model on each benchmark, again using cosine similarity
+    as the model's prediction for each pair.
+    
+    \paragraph{Results.}
+    
+    Table~\ref{tab:benchmark_results} shows the enrichment of same-POS pairs
+    among related and unrelated pairs for each benchmark.
     For WordSim353, MEN and MTurk287, the set of related pairs
     contains significantly more same-POS pairs than the background set.
     In SimLex999 and in SimVerb3500, all pairs are same-POS by design:
@@ -281,11 +290,9 @@ IBM Research\\
     in our experiment is due to ambiguity: for some words, spaCy selected a POS
     which is not the one intended in constructing the benchmark.
     
-    \paragraph{Relation to window size.}
-    
-    To investigate the effect of window size on a model's performance on the benchmark
-    datasets, we evaluate each model on each benchmark, again using cosine similarity
-    as the model's prediction for each pair.
+    Figure~\ref{fig:benchmark_correlation} displays the Pearson correlation
+    between the benchmark score and word embedding cosine similarity,
+    for each benchmark and window size.
     Interestingly, we see a positive correlation of window size with model's performance
     for WordSim353, WordSim353-R, MEN, MTurk287, and MTurk771 (with $p<0.01$; two-tailed t-test).
     For SimLex999, we see a negative correlation instead ($p<0.01$).
