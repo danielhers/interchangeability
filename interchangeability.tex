@@ -299,9 +299,33 @@ IBM Research\\
     
     
 
-\section{Discussion}\label{sec:discussion}
+%\section{Discussion}\label{sec:discussion}
 
-The same analysis could be applied to the vector dimension.
+\section{Conclusion}\label{sec:conclusion}
+
+    In this paper, we investigated the ability of word embedding models
+    to capture the interchangeability of words in syntactically similar contexts,
+    as reflected by their part of speech.
+    We related this ability to the context window size hyper-parameter,
+    showing that models trained with a larger window size
+    are less likely to treat words of the same part of speech as nearest neighbors
+    in the vector space.
+
+    We further relate this result to word similarity and relatedness benchmarks,
+    showing that different benchmarks have different notion of the role of
+    syntactic interchangeability in word similarity.
+    
+    Our investigation focused on a specific relation between words,
+    namely whether they share a part of speech.
+    Many other relations are of interest to the NLP
+    community, such as syntactic dependency relations,
+    and semantic relations like hypernymy and synonymy.
+    Furthermore, while a similar analysis could be applied to other word
+    embedding hyper-parameters, such as the vector dimension.
+    While we used a constant vector dimension of 300 in our experiments,
+    it is an open question whether models with different vector dimensions
+    differ with respect to their tendency to capture different word relations.
+    Future work will extend our analysis to other relations and hyper-parameters.
 
     \bibliographystyle{acl_natbib}
     \bibliography{references}
