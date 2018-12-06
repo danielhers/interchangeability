@@ -213,51 +213,84 @@ IBM Research\\
     
     \begin{table*}[t]
     \centering
-    \begin{tabular}{l|c|cc|cc|c}
-    && \multicolumn{2}{c|}{\bf \# Related} & \multicolumn{2}{c|}{\bf \# Unrelated} & \\
-    \bf Benchmark & \bf Size & \bf All & \bf Same-POS & \bf All & \bf Same-POS & \bf p-value \\
+    \begin{tabular}{l|c|cc|cc|c||cc}
+    && \multicolumn{2}{c|}{\bf \# Related} & \multicolumn{2}{c|}{\bf \# Unrelated}
+    && \multicolumn{2}{c}{\bf \Delta \texttt{win}=2\to15 (\%)} \\
+    \bf Benchmark & \bf Size & \bf All & \bf Same-POS & \bf All & \bf Same-POS & \bf p-value 
+    & \bf CBOW & \bf SGNS\\
     \hline
-    WordSim353 & 353 & 122 & 107 & 53 & 40 & 0.038 \\
-    WordSim353-S & 203 & 60 & 53 & 53 & 40 & 0.061 \\
-    WordSim353-R & 252 & 104 & 89 & 39 & 31 & 0.26 \\
-    SimLex999 & 999 & 234 & 199 & 334 & 295 & 0.897 \\
-    RW & 2034 & 944 & 555 & 262 & 144 & 0.149 \\
-    MEN & 3000 & 791 & 564 & 781 & 439 & $3\cdot10^{-10}$ \\
-    MTurk287 & 287 & 49 & 39 & 119 & 68 & 0.004 \\
-    MTurk771 & 771 & 204 & 153 & 200 & 146 & 0.365 \\
-    SimVerb3500 & 3500 & 633 & 265 & 1217 & 566 & 0.974
+    WordSim353 & 353 & 122 & 107 & 53 & 40 & 0.038 & 24 & -3 \\
+    WordSim353-S & 203 & 60 & 53 & 53 & 40 & 0.061 & 13 & -6 \\
+    WordSim353-R & 252 & 104 & 89 & 39 & 31 & 0.26 & 42 & 4 \\
+    SimLex999 & 999 & 234 & 199 & 334 & 295 & 0.897 & -1 & -20 \\
+    RW & 2034 & 944 & 555 & 262 & 144 & 0.149 & 37 & -12 \\
+    MEN & 3000 & 791 & 564 & 781 & 439 & $3\cdot10^{-10}$ & 9 & -2 \\
+    MTurk287 & 287 & 49 & 39 & 119 & 68 & 0.004 & 8 & -5 \\
+    MTurk771 & 771 & 204 & 153 & 200 & 146 & 0.365 & 12 & -5 \\
+    SimVerb3500 & 3500 & 633 & 265 & 1217 & 566 & 0.974 & 6 & -30
     \end{tabular}
     \caption{Analysis of interchangeability (by same-POS) in
     word similarity and relatedness benchmarks.
+    \textit{Related} and \textit{Unrelated} are the top and bottom 30\% of the pairs,
+    by benchmark score, respectively.
+    \textit{p-value} is calculated using the hypergeometric
+    test, comparing the enrichment of same-POS pairs within related pairs,
+    with a background of all related and unrelated pairs (\S\ref{sec:benchmark_exp}).
+    \textit{\Delta \texttt{win}=2\to5 (\%)} is the relative change, in percents,
+    of the model's performance (by Spearman correlation) when going from window size 2
+    to window size 15, for the CBOW and SGNS algorithms (\S\ref{sec:eval_exp}).
     \label{tab:benchmark_enrichment}}
     \end{table*}
     
     
-    \begin{table}[t]
-    \centering
-    \setlength\tabcolsep{3.5pt}
-    \begin{tabular}{l|ccc|ccc}
-    & \multicolumn{3}{c|}{\bf CBOW} & \multicolumn{3}{c}{\bf SGNS} \\
-    \bf Benchmark & 2 & 15 & \Delta & 2 & 15 & \Delta \\
-    \hline
-    WordSim353 & 0.45 & 0.56 & 24 & 0.61 & 0.59 & -3 \\
-    WordSim353-S & 0.60 & 0.68 & 13 & 0.73 & 0.69 & -6 \\
-    WordSim353-R & 0.34 & 0.48 & 42 & 0.50 & 0.52 & 4 \\
-    SimLex999 & 0.37 & 0.36 & -1 & 0.38 & 0.30 & -20 \\
-    RW & 0.12 & 0.17 & 37 & 0.13 & 0.11 & -12 \\
-    MEN & 0.70 & 0.76 & 9 & 0.75 & 0.74 & -2 \\
-    MTurk287 & 0.61 & 0.66 & 8 & 0.67 & 0.64 & -5 \\
-    MTurk771 & 0.57 & 0.64 & 12 & 0.64 & 0.61 & -5 \\
-    SimVerb3500 & 0.21 & 0.22 & 6 & 0.26 & 0.18 & -30
-    \end{tabular}
-    \caption{Performance of the CBOW and SGNS algorithms on each benchmark,
-        with window sizes 2 and 15
-        (measured by Spearman correlation between the benchmark score
-        and the word embedding cosine similarity),
-        and the relative improvement (or deterioration),
-        in percents, with the increase of window size.
-    \label{tab:benchmark_results}}
-    \end{table}
+%    \begin{table}[t]
+%    \centering
+%    \setlength\tabcolsep{3.5pt}
+%    \begin{tabular}{l|ccc|ccc}
+%    & \multicolumn{3}{c|}{\bf CBOW} & \multicolumn{3}{c}{\bf SGNS} \\
+%    \bf Benchmark & 2 & 15 & \Delta & 2 & 15 & \Delta \\
+%    \hline
+%    WordSim353 & 0.45 & 0.56 & 24 & 0.61 & 0.59 & -3 \\
+%    WordSim353-S & 0.60 & 0.68 & 13 & 0.73 & 0.69 & -6 \\
+%    WordSim353-R & 0.34 & 0.48 & 42 & 0.50 & 0.52 & 4 \\
+%    SimLex999 & 0.37 & 0.36 & -1 & 0.38 & 0.30 & -20 \\
+%    RW & 0.12 & 0.17 & 37 & 0.13 & 0.11 & -12 \\
+%    MEN & 0.70 & 0.76 & 9 & 0.75 & 0.74 & -2 \\
+%    MTurk287 & 0.61 & 0.66 & 8 & 0.67 & 0.64 & -5 \\
+%    MTurk771 & 0.57 & 0.64 & 12 & 0.64 & 0.61 & -5 \\
+%    SimVerb3500 & 0.21 & 0.22 & 6 & 0.26 & 0.18 & -30
+%    \end{tabular}
+%    \caption{Performance of the CBOW and SGNS algorithms on each benchmark,
+%        with window sizes 2 and 15
+%        (measured by Spearman correlation between the benchmark score
+%        and the word embedding cosine similarity),
+%        and the relative improvement (or deterioration),
+%        in percents, with the increase of window size.
+%    \label{tab:benchmark_results}}
+%    \end{table}
+    
+    
+\section{Benchmark Evaluation}\label{appendix:benchmrak}
+    
+    \begin{figure*}[t]
+        \begin{subfigure}[b]{\columnwidth}
+        \includegraphics[width=\columnwidth]{figs/similarities_fasttext_enwiki-20170501-clean_cbow-300d-min500_eval.png}
+        \caption{CBOW}
+        \end{subfigure}
+        \begin{subfigure}[b]{\columnwidth}
+        \includegraphics[width=\columnwidth]{figs/similarities_fasttext_enwiki-20170501-clean_skipgram-300d-min500_eval.png}
+        \caption{SGNS}
+        \end{subfigure}
+        \caption{Performance of the CBOW~(a) and SGNS~(b) algorithms on each benchmark,
+        for each window size,
+        measured by Spearman correlation between the benchmark score
+        and the word embedding cosine similarity.
+        \label{fig:benchmark_correlation}}
+    \end{figure*}
+
+    Figure~\ref{fig:benchmark_correlation} displays the Spearman correlation
+    between the benchmark score and word embedding cosine similarity,
+    for each benchmark and window size (\S\ref{sec:benchmark_exp}).
     
     \subsection{Word Similarity Benchmark Analysis}\label{sec:benchmark_exp}
     
@@ -323,14 +356,18 @@ IBM Research\\
     
     \paragraph{Results.}
     
-    Table~\ref{tab:benchmark_results} displays the performance of the CBOW and SGNS
-    algorithms on each benchmark, with window sizes 2 and 15,
-    and the relative improvement (or deterioration),
-    in percents, with the increase of window size.
-    Apart from a small dip between windows 1 and 2
-    (which is why we use 2 as the smallest window size for this experiment),
+%    Table~\ref{tab:benchmark_results} displays the performance of the CBOW and SGNS
+%    algorithms on each benchmark, with window sizes 2 and 15,
+%    and the relative improvement (or deterioration),
+%    in percents, with the increase of window size.
+    Figure~\ref{fig:benchmark_correlation} displays the performance of the CBOW and SGNS
+    algorithms on each benchmark, with window sizes 1 to 15.
+    Apart from a small dip between windows 1 and 2,
     the performance changes nearly monotonically with window size in each
-    setting.\footnote{See Supplementary Material for the full data.}
+    setting.
+    The relative improvement (or deterioration),
+    in percents, with the increase of window size from 2 to 15,
+    are shown in Table~\ref{tab:benchmark_enrichment}.
 %    Interestingly, we see a positive correlation of window size with model's performance
 %    for WordSim353, WordSim353-R, MEN, MTurk287, and MTurk771 (with $p<0.01$; two-tailed t-test).
 %    For SimLex999, we see a negative correlation instead ($p<0.01$).
@@ -394,26 +431,4 @@ IBM Research\\
     pivot POS and neighbor POS (\S\ref{sec:nn_exp}), for all window sizes we experimented with.
     The number of nearest neighbors of the same POS is consistently decreasing with window size,
     while the number of nearest neighbors of other POS are increasing or unaffected.
-    
-\section{Benchmark Evaluation}\label{appendix:benchmrak}
-    
-    \begin{figure*}[t]
-        \begin{subfigure}[b]{\columnwidth}
-        \includegraphics[width=\columnwidth]{figs/similarities_fasttext_enwiki-20170501-clean_cbow-300d-min500_eval.png}
-        \caption{CBOW}
-        \end{subfigure}
-        \begin{subfigure}[b]{\columnwidth}
-        \includegraphics[width=\columnwidth]{figs/similarities_fasttext_enwiki-20170501-clean_skipgram-300d-min500_eval.png}
-        \caption{SGNS}
-        \end{subfigure}
-        \caption{Performance of the CBOW~(a) and SGNS~(b) algorithms on each benchmark,
-        for each window size,
-        measured by Spearman correlation between the benchmark score
-        and the word embedding cosine similarity.
-        \label{fig:benchmark_correlation}}
-    \end{figure*}
-
-    Figure~\ref{fig:benchmark_correlation} displays the Spearman correlation
-    between the benchmark score and word embedding cosine similarity,
-    for each benchmark and window size (\S\ref{sec:benchmark_exp}).
 \end{document}
