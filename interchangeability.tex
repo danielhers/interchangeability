@@ -259,7 +259,7 @@ IBM Research\\
     \label{tab:benchmark_results}}
     \end{table}
     
-    \subsection{Word Similarity Benchmark Experiments}\label{sec:benchmark_exp}
+    \subsection{Word Similarity Benchmark Analysis}\label{sec:benchmark_exp}
     
     \paragraph{Word similarity benchmarks.}
     
@@ -286,6 +286,8 @@ IBM Research\\
     is considered ``unrelated'', the top 30\% as ``related'',
     and the middle 40\% are ignored.
     
+    \paragraph{Same-POS enrichment.}
+    
     Given the binary classification obtained from the human-annotated scores
     for each benchmark, we can find the enrichment of same-POS pairs among
     related pairs.
@@ -296,14 +298,6 @@ IBM Research\\
     test, comparing the enrichment of same-POS pairs within related pairs,
     with a background of all related and unrelated pairs (ignoring ones in
     the middle 40\% range of scores).
-    
-    \paragraph{Relation to window size.}
-    
-    To investigate the effect of window size on a model's performance on the benchmarks,
-    we evaluate each model on each benchmark, again using cosine similarity
-    as the model's prediction for each pair.
-    The performance is measured by Spearman correlation between the benchmark score
-    and the word embedding cosine similarity.
     
     \paragraph{Results.}
     
@@ -316,6 +310,18 @@ IBM Research\\
     The fact that not all pairs in these benchmarks are judged as same-POS
     in our experiment is due to ambiguity: for some words, spaCy selected a POS
     which is not the one intended when constructing the benchmark.
+    
+    \subsection{Evaluation on Benchmarks}\label{sec:eval_exp}
+    
+    \paragraph{Relation to window size.}
+    
+    To investigate the effect of window size on a model's performance on the benchmarks,
+    we evaluate each model on each benchmark, again using cosine similarity
+    as the model's prediction for each pair.
+    The performance is measured by Spearman correlation between the benchmark score
+    and the word embedding cosine similarity.
+    
+    \paragraph{Results.}
     
     Table~\ref{tab:benchmark_results} displays the performance of the CBOW and SGNS
     algorithms on each benchmark, with window sizes 2 and 15,
