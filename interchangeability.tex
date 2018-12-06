@@ -371,17 +371,19 @@ IBM Research\\
 
 \section{Conclusion}\label{sec:conclusion}
 
-    In this paper, we investigated the ability of word embedding models
-    to capture the interchangeability of words in syntactically similar contexts,
-    as reflected by their part of speech.
-    We related this ability to the context window size hyper-parameter,
+    In this paper, we investigated the effect of the context window size hyper-parameter
+    on their performance on word similarity benchmarks,
     showing that models trained with a larger window size
+    tend to perform better for the CBOW algorithm, but worse for the SGNS algorithm.
+    Hypothesizing that the effect is related to
+    the ability of word embedding models
+    to capture the interchangeability of words in syntactically similar contexts,
+    we measure interchangeability as reflected by words' part of speech.
+    We show that different benchmarks have different notion of the role of
+    syntactic interchangeability in word similarity,
+    and that models with a larger window size
     are less likely to treat words of the same part of speech as nearest neighbors
     in the vector space.
-
-    We further relate this result to word similarity and relatedness benchmarks,
-    showing that different benchmarks have different notion of the role of
-    syntactic interchangeability in word similarity.
     
     Our investigation focused on a specific relation between words,
     namely whether they share a part of speech.
