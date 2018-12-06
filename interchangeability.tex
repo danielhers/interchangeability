@@ -94,8 +94,10 @@ IBM Research\\
     is reflected in each benchmark (\S\ref{sec:benchmark_exp}),
     and its relation to the context window size (\S\ref{sec:interchangeability_exp}).
     Our experiments reveal that context window size is negatively correlated
-    with the number of same-POS words among the nearest neighbors of words.
-    \footnote{Our code will be made available upon publication.}
+    with the number of same-POS words among the nearest neighbors of words,
+    but that this fact is not enough to explain the complex interaction between
+    context window size and performance on word similarity
+    benchmarks.\footnote{Our code will be made available upon publication.}
     
     \begin{figure*}[th]
         \begin{subfigure}[b]{\columnwidth}
@@ -115,21 +117,21 @@ IBM Research\\
     
     \begin{table*}[th]
     \centering
-    \begin{tabular}{l|c|cc|cc|c||cc}
-    && \multicolumn{2}{c|}{\bf \# Related} & \multicolumn{2}{c|}{\bf \# Unrelated}
-    && \multicolumn{2}{c}{\bf \Delta \texttt{win}=2\to15 (\%)} \\
-    \bf Benchmark & \bf Size & \bf All & \bf Same-POS & \bf All & \bf Same-POS & \bf p-value 
-    & \bf CBOW & \bf SGNS\\
+    \begin{tabular}{l|c||cc||cc|cc|c}
+    && \multicolumn{2}{c||}{\bf \Delta \texttt{win}=2\to15 (\%)}
+    & \multicolumn{2}{c|}{\bf \# Related} & \multicolumn{2}{c|}{\bf \# Unrelated} \\
+    \bf Benchmark & \bf Size& \bf CBOW & \bf SGNS
+    & \bf All & \bf Same-POS & \bf All & \bf Same-POS & \bf p-value \\
     \hline
-    WordSim353 & 353 & 122 & 107 & 53 & 40 & 0.038 & 24 & -3 \\
-    WordSim353-S & 203 & 60 & 53 & 53 & 40 & 0.061 & 13 & -6 \\
-    WordSim353-R & 252 & 104 & 89 & 39 & 31 & 0.26 & 42 & 4 \\
-    SimLex999 & 999 & 234 & 199 & 334 & 295 & 0.897 & -1 & -20 \\
-    RW & 2034 & 944 & 555 & 262 & 144 & 0.149 & 37 & -12 \\
-    MEN & 3000 & 791 & 564 & 781 & 439 & $3\cdot10^{-10}$ & 9 & -2 \\
-    MTurk287 & 287 & 49 & 39 & 119 & 68 & 0.004 & 8 & -5 \\
-    MTurk771 & 771 & 204 & 153 & 200 & 146 & 0.365 & 12 & -5 \\
-    SimVerb3500 & 3500 & 633 & 265 & 1217 & 566 & 0.974 & 6 & -30
+    WordSim353 & 353 & 24 & -3 & 122 & 107 & 53 & 40 & 0.038 \\
+    WordSim353-S & 203 & 13 & -6 & 60 & 53 & 53 & 40 & 0.061 \\
+    WordSim353-R & 252 & 42 & 4 & 104 & 89 & 39 & 31 & 0.26 \\
+    SimLex999 & 999 & -1 & -20 & 234 & 199 & 334 & 295 & 0.897 \\
+    RW & 2034 & 37 & -12 & 944 & 555 & 262 & 144 & 0.149 \\
+    MEN & 3000 & 9 & -2 & 791 & 564 & 781 & 439 & $3\cdot10^{-10}$ \\
+    MTurk287 & 287 & 8 & -5 & 49 & 39 & 119 & 68 & 0.004 \\
+    MTurk771 & 771 & 12 & -5 & 204 & 153 & 200 & 146 & 0.365 \\
+    SimVerb3500 & 3500 & 6 & -30 & 633 & 265 & 1217 & 566 & 0.974
     \end{tabular}
     \caption{Analysis of interchangeability (by same-POS) in
     word similarity and relatedness benchmarks.
@@ -198,10 +200,10 @@ IBM Research\\
     \subsection{Evaluation on Benchmarks}\label{sec:eval_exp}
     
     To investigate the effect of window size on a model's performance on the benchmarks,
-    we evaluate each model on each benchmark, again using cosine similarity
+    we evaluate each model on each benchmark, using cosine similarity
     as the model's prediction for each pair.
     The performance is measured by Spearman correlation between the benchmark score
-    and the word embedding cosine similarity.
+    and the word embedding cosine similarity \cite{levy2015improving}.
     
     \paragraph{Results.}
     
