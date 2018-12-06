@@ -69,10 +69,12 @@ IBM Research\\
     little has been done to quantify the
     effect of model hyper-parameters on output tendencies.
     In this work, we begin to answer this question.
-    As a test case, we experiment with fastText \cite{bojanowski2016enriching}.
+    As a test case, we experiment with fastText \cite{bojanowski2016enriching},
+    evaluating it on benchmarks designed to measure how well a model captures the degree
+    of similarity between words (\S\ref{sec:benchmarks}).
     We take the context window size as the hyper-parameter,
     and syntactic interchangeability of words as the relation under investigation,
-    expressed by the part of speech (POS).
+    expressed by the part of speech (POS; see \S\ref{sec:interchangeability}).
     
     \paragraph{Context window size.}
     Word embedding algorithms learn vector representations for words,
@@ -84,11 +86,143 @@ IBM Research\\
     The size of the context window is a hyper-parameter of the training algorithm.
 %    referred to as the \textit{context window size}.
 
-    Our experiments\footnote{Our code will be made available upon publication.}
-    reveal that context window size is negatively correlated
+    In our experiments,
+    we discover a complex relationship between the context window size hyper-parameter
+    and the performance of a word embedding model in estimating the similarity between words
+    (\S\ref{sec:eval_exp}).
+    To try to explain this relationship, we quantify how syntactic interchangeability
+    is reflected in each benchmark (\S\ref{sec:benchmark_exp}),
+    and its relation to the context window size (\S\ref{sec:interchangeability_exp}).
+    Our experiments reveal that context window size is negatively correlated
     with the number of same-POS words among the nearest neighbors of words.
+    \footnote{Our code will be made available upon publication.}
     
-    \section{Syntactic Interchangeability of Nearest Neighbors}\label{sec:nn}
+    \begin{figure*}[th]
+        \begin{subfigure}[b]{\columnwidth}
+        \includegraphics[width=\columnwidth]{figs/similarities_fasttext_enwiki-20170501-clean_cbow-300d-min500_eval.png}
+        \caption{CBOW}
+        \end{subfigure}
+        \begin{subfigure}[b]{\columnwidth}
+        \includegraphics[width=\columnwidth]{figs/similarities_fasttext_enwiki-20170501-clean_skipgram-300d-min500_eval.png}
+        \caption{SGNS}
+        \end{subfigure}
+        \caption{Performance of the CBOW~(a) and SGNS~(b) algorithms on each benchmark,
+        for each window size,
+        measured by Spearman correlation between the benchmark score
+        and the word embedding cosine similarity.
+        \label{fig:benchmark_correlation}}
+    \end{figure*}
+    
+    \begin{table*}[th]
+    \centering
+    \begin{tabular}{l|c|cc|cc|c||cc}
+    && \multicolumn{2}{c|}{\bf \# Related} & \multicolumn{2}{c|}{\bf \# Unrelated}
+    && \multicolumn{2}{c}{\bf \Delta \texttt{win}=2\to15 (\%)} \\
+    \bf Benchmark & \bf Size & \bf All & \bf Same-POS & \bf All & \bf Same-POS & \bf p-value 
+    & \bf CBOW & \bf SGNS\\
+    \hline
+    WordSim353 & 353 & 122 & 107 & 53 & 40 & 0.038 & 24 & -3 \\
+    WordSim353-S & 203 & 60 & 53 & 53 & 40 & 0.061 & 13 & -6 \\
+    WordSim353-R & 252 & 104 & 89 & 39 & 31 & 0.26 & 42 & 4 \\
+    SimLex999 & 999 & 234 & 199 & 334 & 295 & 0.897 & -1 & -20 \\
+    RW & 2034 & 944 & 555 & 262 & 144 & 0.149 & 37 & -12 \\
+    MEN & 3000 & 791 & 564 & 781 & 439 & $3\cdot10^{-10}$ & 9 & -2 \\
+    MTurk287 & 287 & 49 & 39 & 119 & 68 & 0.004 & 8 & -5 \\
+    MTurk771 & 771 & 204 & 153 & 200 & 146 & 0.365 & 12 & -5 \\
+    SimVerb3500 & 3500 & 633 & 265 & 1217 & 566 & 0.974 & 6 & -30
+    \end{tabular}
+    \caption{Analysis of interchangeability (by same-POS) in
+    word similarity and relatedness benchmarks.
+    \textit{Related} and \textit{Unrelated} are the top and bottom 30\% of the pairs,
+    by benchmark score, respectively.
+    \textit{p-value} is calculated using the hypergeometric
+    test, comparing the enrichment of same-POS pairs within related pairs,
+    with a background of all related and unrelated pairs (\S\ref{sec:benchmark_exp}).
+    \textit{\Delta \texttt{win}=2\to5 (\%)} is the relative change, in percents,
+    of the model's performance (by Spearman correlation) when going from window size 2
+    to window size 15, for the CBOW and SGNS algorithms (\S\ref{sec:eval_exp}).
+    \label{tab:benchmark_enrichment}}
+    \end{table*}
+%
+%    Figure~\ref{fig:benchmark_correlation} displays the Spearman correlation
+%    between the benchmark score and word embedding cosine similarity,
+%    for each benchmark and window size (\S\ref{sec:benchmark_exp}).
+    
+    \section{Word Similarity Benchmarks}\label{sec:benchmarks}
+    
+    Many benchmarks have been proposed for the evaluation of unsupervised word
+    representations.
+    In general, they can be divided into intrinsic and extrinsic evaluation methods
+    \cite{schnabel2015evaluation,chiu2016intrinsic,jastrzebski2017evaluate,alshargi2018concept2vec,bakarov2018survey}.
+    While most datasets measure the semantic similarity between words,
+    many datasets actually capture semantic relatedness
+    \cite{hill2015simlex,avraham2016improving},
+    or more complex relations such as analogy or the ability to categorize
+    words based on the distributed representation encoded in word embeddings.
+    We focus on similarity and relatedness, and evaluate interchangeability
+    of related pairs in several common benchmarks.
+    
+    \subsection{Data}\label{sec:data}
+    We learn word embeddings from English Wikipedia,
+    using a dump from May 1, 2017\footnote{\url{https://dumps.wikimedia.org/enwiki}}.
+    The data is preprocessed using a publicly available preprocessing
+    script\footnote{\url{http://mattmahoney.net/dc/textdata.html}},
+    extracting text, removing nonalphanumeric characters,
+    converting digits to text, and lowercasing the text.
+    
+    \paragraph{Word similarity benchmarks.}
+    
+    To measure semantic word similarity, we use the following benchmarks:
+     WordSim-353~\cite{finkelstein2001placing} and its partition into
+     WordSim-353-Sim~\cite{agirre2009study} and
+     WordSim-353-Rel~\cite{zesch2008using},
+     SimLex999~\cite{hill2015simlex},
+     Rare Words~\cite[RW; ][]{luong2013better},
+     MEN~\cite{bruni2012distributional},
+     MTurk-287~\cite{radinsky2011word},
+     MTurk-771~\cite{halawi2012large}, and
+     SimVerb-3500~\cite{Gerz2016emnlp}.
+    See Table~\ref{tab:benchmark_enrichment} for the size of each benchmark.
+    
+    \subsection{Hyper-parameters}\label{sec:hyperparams}
+    We use fastText \cite{bojanowski2016enriching} to learn
+    300-dimensional word embedding models,
+    using both the CBOW and SGNS algorithms \cite{mikolov2013efficient}.
+    The context window size varies from 1 up to 15.
+    We set the minimal word occurrence count to 500, to avoid
+    very rare words or uncommon spelling errors from skewing the results.
+    All other hyper-parameters are set to their default values.
+    To calculate the similarity between words, we use cosine similarity
+    between their vectors.
+    
+    \subsection{Evaluation on Benchmarks}\label{sec:eval_exp}
+    
+    To investigate the effect of window size on a model's performance on the benchmarks,
+    we evaluate each model on each benchmark, again using cosine similarity
+    as the model's prediction for each pair.
+    The performance is measured by Spearman correlation between the benchmark score
+    and the word embedding cosine similarity.
+    
+    \paragraph{Results.}
+    
+%    Table~\ref{tab:benchmark_results} displays the performance of the CBOW and SGNS
+%    algorithms on each benchmark, with window sizes 2 and 15,
+%    and the relative improvement (or deterioration),
+%    in percents, with the increase of window size.
+    Figure~\ref{fig:benchmark_correlation} displays the performance of the CBOW and SGNS
+    algorithms on each benchmark, with window sizes 1 to 15.
+    Apart from a small dip between windows 1 and 2,
+    the performance changes nearly monotonically with window size in each
+    setting.
+    The relative improvement (or deterioration),
+    in percents, with the increase of window size from 2 to 15,
+    are shown in Table~\ref{tab:benchmark_enrichment}.
+%    Interestingly, we see a positive correlation of window size with model's performance
+%    for WordSim353, WordSim353-R, MEN, MTurk287, and MTurk771 (with $p<0.01$; two-tailed t-test).
+%    For SimLex999, we see a negative correlation instead ($p<0.01$).
+    
+    
+    \section{Syntactic Interchangeability}\label{sec:interchangeability}
     
     A word's part of speech (also known as syntactic category)
     is determined by syntactic distribution, and
@@ -112,59 +246,57 @@ IBM Research\\
     the more importance we assume the model implicitly places on syntactic interchangeability
     for the calculation of word similarity.
     
+    \subsection{Interchangeability Analysis in Word Similarity Benchmarks}\label{sec:benchmark_exp}
+    
+    While all of these benchmarks assign a score along a scale to each pair
+    (calculated from human scoring), for our experiment we would like to use
+    a binary annotation of whether a pair is related or not.
+    For this purpose, we divide the whole range of scores,
+    for each benchmark, to three parts:
+    the lowest 30\% of the range between the lowest and highest scores
+    is considered ``unrelated'', the top 30\% as ``related'',
+    and the middle 40\% are ignored.
+    
+    \paragraph{Same-POS enrichment.}
+    
+    Given the binary classification obtained from the human-annotated scores
+    for each benchmark, we can find the enrichment of same-POS pairs among
+    related pairs.
+    We use spaCy 2.0.11\footnote{\url{https://spacy.io}} (with the \texttt{en\_core\_web\_sm} model)
+    to annotate the POS for each word in each benchmark
+    pair (tagging them in isolation to select the most probably POS),
+    and look at the set of same-POS pairs in the benchmark.
+    For each of the benchmark, we calculate a p-value using the hypergeometric
+    test, comparing the enrichment of same-POS pairs within related pairs,
+    with a background of all related and unrelated pairs (ignoring ones in
+    the middle 40\% range of scores).
+    
+    \paragraph{Results.}
+    
+    Table~\ref{tab:benchmark_enrichment} shows the enrichment of same-POS pairs
+    among related and unrelated pairs for each benchmark.
+    For WordSim353, MEN and MTurk287, the set of related pairs
+    contains significantly more same-POS pairs than the background set.
+    In SimLex999 and in SimVerb3500, all pairs are same-POS by design:
+    in SimVerb all words are verbs, and in SimLex every pair is of the same
+    POS.\footnote{The fact that not all pairs in these benchmarks are judged as same-POS
+    in our experiment is due to ambiguity: for some words, spaCy selected a POS
+    which is not the one intended when constructing the benchmark.}
     
     
-    \section{Word Similarity Benchmarks}\label{sec:benchmarks}
-    
-    Many benchmarks have been proposed for the evaluation of unsupervised word
-    representations.
-    In general, they can be divided into intrinsic and extrinsic evaluation methods
-    \cite{schnabel2015evaluation,chiu2016intrinsic,jastrzebski2017evaluate,alshargi2018concept2vec,bakarov2018survey}.
-    While most datasets measure the semantic similarity between words,
-    many datasets actually capture semantic relatedness
-    \cite{hill2015simlex,avraham2016improving},
-    or more complex relations such as analogy or the ability to categorize
-    words based on the distributed representation encoded in word embeddings.
-    We focus on similarity and relatedness, and evaluate interchangeability
-    of related pairs in several common benchmarks (\S\ref{sec:data}).
-    
-    
-    \section{Experiments}\label{sec:exp}
-    
-    \subsection{Data}\label{sec:data}
-    We learn word embeddings from English Wikipedia,
-    using a dump from May 1, 2017\footnote{\url{https://dumps.wikimedia.org/enwiki}}.
-    The data is preprocessed using a publicly available preprocessing
-    script\footnote{\url{http://mattmahoney.net/dc/textdata.html}},
-    extracting text, removing nonalphanumeric characters,
-    converting digits to text, and lowercasing the text.
-    
-    \subsection{Hyper-parameters}\label{sec:hyperparams}
-    We use fastText \cite{bojanowski2016enriching} to learn
-    300-dimensional word embedding models,
-    using both the CBOW and SGNS algorithms \cite{mikolov2013efficient}.
-    The context window size varies from 1 up to 15.
-    We set the minimal word occurrence count to 500, to avoid
-    very rare words or uncommon spelling errors from skewing the results.
-    All other hyper-parameters are set to their default values.
-    To calculate the similarity between words, we use cosine similarity
-    between their vectors.
-    
-    \subsection{Nearest Neighbor Analysis}\label{sec:nn_exp}
+    \subsection{Nearest Neighbor Analysis}\label{sec:interchangeability_exp}
         
     \paragraph{Collecting pivots.}
     
     We create a word list for each of the three most
     common parts of speech:
-    nouns, adjectives and verbs\footnote{Our word lists will be released upon publication.}.
+    nouns, adjectives and verbs.\footnote{Our word lists will be released upon publication.}
     For each POS, we list all lemmas of all synsets of that POS from
     WordNet \cite{miller1998wordnet}.
     To ``purify'' the lists and avoid noise from homonyms,
     we remove from each list any lemma that also belongs to a synset from
     another POS.
-    As a further cleaning step, we use
-    spaCy 2.0.11\footnote{\url{https://spacy.io}} (with the \texttt{en\_core\_web\_sm} model)
-    to tag each word,
+    As a further cleaning step, we use spaCy to tag each word,
     and only keep words for which the spaCy POS agrees with the WordNet POS.
     Without context, spaCy will likely choose the most
     common POS based on its training corpus, which is different from WordNet,
@@ -210,39 +342,6 @@ IBM Research\\
     constant.\footnote{See Supplementary Material for the full data.}
     
     
-    
-    \begin{table*}[t]
-    \centering
-    \begin{tabular}{l|c|cc|cc|c||cc}
-    && \multicolumn{2}{c|}{\bf \# Related} & \multicolumn{2}{c|}{\bf \# Unrelated}
-    && \multicolumn{2}{c}{\bf \Delta \texttt{win}=2\to15 (\%)} \\
-    \bf Benchmark & \bf Size & \bf All & \bf Same-POS & \bf All & \bf Same-POS & \bf p-value 
-    & \bf CBOW & \bf SGNS\\
-    \hline
-    WordSim353 & 353 & 122 & 107 & 53 & 40 & 0.038 & 24 & -3 \\
-    WordSim353-S & 203 & 60 & 53 & 53 & 40 & 0.061 & 13 & -6 \\
-    WordSim353-R & 252 & 104 & 89 & 39 & 31 & 0.26 & 42 & 4 \\
-    SimLex999 & 999 & 234 & 199 & 334 & 295 & 0.897 & -1 & -20 \\
-    RW & 2034 & 944 & 555 & 262 & 144 & 0.149 & 37 & -12 \\
-    MEN & 3000 & 791 & 564 & 781 & 439 & $3\cdot10^{-10}$ & 9 & -2 \\
-    MTurk287 & 287 & 49 & 39 & 119 & 68 & 0.004 & 8 & -5 \\
-    MTurk771 & 771 & 204 & 153 & 200 & 146 & 0.365 & 12 & -5 \\
-    SimVerb3500 & 3500 & 633 & 265 & 1217 & 566 & 0.974 & 6 & -30
-    \end{tabular}
-    \caption{Analysis of interchangeability (by same-POS) in
-    word similarity and relatedness benchmarks.
-    \textit{Related} and \textit{Unrelated} are the top and bottom 30\% of the pairs,
-    by benchmark score, respectively.
-    \textit{p-value} is calculated using the hypergeometric
-    test, comparing the enrichment of same-POS pairs within related pairs,
-    with a background of all related and unrelated pairs (\S\ref{sec:benchmark_exp}).
-    \textit{\Delta \texttt{win}=2\to5 (\%)} is the relative change, in percents,
-    of the model's performance (by Spearman correlation) when going from window size 2
-    to window size 15, for the CBOW and SGNS algorithms (\S\ref{sec:eval_exp}).
-    \label{tab:benchmark_enrichment}}
-    \end{table*}
-    
-    
 %    \begin{table}[t]
 %    \centering
 %    \setlength\tabcolsep{3.5pt}
@@ -269,112 +368,6 @@ IBM Research\\
 %    \label{tab:benchmark_results}}
 %    \end{table}
     
-    
-\section{Benchmark Evaluation}\label{appendix:benchmrak}
-    
-    \begin{figure*}[t]
-        \begin{subfigure}[b]{\columnwidth}
-        \includegraphics[width=\columnwidth]{figs/similarities_fasttext_enwiki-20170501-clean_cbow-300d-min500_eval.png}
-        \caption{CBOW}
-        \end{subfigure}
-        \begin{subfigure}[b]{\columnwidth}
-        \includegraphics[width=\columnwidth]{figs/similarities_fasttext_enwiki-20170501-clean_skipgram-300d-min500_eval.png}
-        \caption{SGNS}
-        \end{subfigure}
-        \caption{Performance of the CBOW~(a) and SGNS~(b) algorithms on each benchmark,
-        for each window size,
-        measured by Spearman correlation between the benchmark score
-        and the word embedding cosine similarity.
-        \label{fig:benchmark_correlation}}
-    \end{figure*}
-
-    Figure~\ref{fig:benchmark_correlation} displays the Spearman correlation
-    between the benchmark score and word embedding cosine similarity,
-    for each benchmark and window size (\S\ref{sec:benchmark_exp}).
-    
-    \subsection{Word Similarity Benchmark Analysis}\label{sec:benchmark_exp}
-    
-    \paragraph{Word similarity benchmarks.}
-    
-    To measure semantic word similarity, we use the following benchmarks:
-     WordSim-353~\cite{finkelstein2001placing} and its partition into
-     WordSim-353-Sim~\cite{agirre2009study} and
-     WordSim-353-Rel~\cite{zesch2008using},
-     SimLex999~\cite{hill2015simlex},
-     Rare Words~\cite[RW; ][]{luong2013better},
-     MEN~\cite{bruni2012distributional},
-     MTurk-287~\cite{radinsky2011word},
-     MTurk-771~\cite{halawi2012large}, and
-     SimVerb-3500~\cite{Gerz2016emnlp}.
-    See Table~\ref{tab:benchmark_enrichment} for the size of each benchmark.
-
-    \paragraph{Relatedness threshold.}
-    
-    While all of these benchmarks assign a score along a scale to each pair
-    (calculated from human scoring), for our experiment we would like to use
-    a binary annotation of whether a pair is related or not.
-    For this purpose, we divide the whole range of scores,
-    for each benchmark, to three parts:
-    the lowest 30\% of the range between the lowest and highest scores
-    is considered ``unrelated'', the top 30\% as ``related'',
-    and the middle 40\% are ignored.
-    
-    \paragraph{Same-POS enrichment.}
-    
-    Given the binary classification obtained from the human-annotated scores
-    for each benchmark, we can find the enrichment of same-POS pairs among
-    related pairs.
-    Again, we use spaCy to annotate the POS for each word in each benchmark
-    pair (tagging them in isolation to select the most probably POS),
-    and look at the set of same-POS pairs in the benchmark.
-    For each of the benchmark, we calculate a p-value using the hypergeometric
-    test, comparing the enrichment of same-POS pairs within related pairs,
-    with a background of all related and unrelated pairs (ignoring ones in
-    the middle 40\% range of scores).
-    
-    \paragraph{Results.}
-    
-    Table~\ref{tab:benchmark_enrichment} shows the enrichment of same-POS pairs
-    among related and unrelated pairs for each benchmark.
-    For WordSim353, MEN and MTurk287, the set of related pairs
-    contains significantly more same-POS pairs than the background set.
-    In SimLex999 and in SimVerb3500, all pairs are same-POS by design:
-    in SimVerb all words are verbs, and in SimLex every pair is of the same POS.
-    The fact that not all pairs in these benchmarks are judged as same-POS
-    in our experiment is due to ambiguity: for some words, spaCy selected a POS
-    which is not the one intended when constructing the benchmark.
-    
-    \subsection{Evaluation on Benchmarks}\label{sec:eval_exp}
-    
-    \paragraph{Relation to window size.}
-    
-    To investigate the effect of window size on a model's performance on the benchmarks,
-    we evaluate each model on each benchmark, again using cosine similarity
-    as the model's prediction for each pair.
-    The performance is measured by Spearman correlation between the benchmark score
-    and the word embedding cosine similarity.
-    
-    \paragraph{Results.}
-    
-%    Table~\ref{tab:benchmark_results} displays the performance of the CBOW and SGNS
-%    algorithms on each benchmark, with window sizes 2 and 15,
-%    and the relative improvement (or deterioration),
-%    in percents, with the increase of window size.
-    Figure~\ref{fig:benchmark_correlation} displays the performance of the CBOW and SGNS
-    algorithms on each benchmark, with window sizes 1 to 15.
-    Apart from a small dip between windows 1 and 2,
-    the performance changes nearly monotonically with window size in each
-    setting.
-    The relative improvement (or deterioration),
-    in percents, with the increase of window size from 2 to 15,
-    are shown in Table~\ref{tab:benchmark_enrichment}.
-%    Interestingly, we see a positive correlation of window size with model's performance
-%    for WordSim353, WordSim353-R, MEN, MTurk287, and MTurk771 (with $p<0.01$; two-tailed t-test).
-%    For SimLex999, we see a negative correlation instead ($p<0.01$).
-    
-    
-
-%\section{Discussion}\label{sec:discussion}
 
 \section{Conclusion}\label{sec:conclusion}
 
@@ -405,30 +398,4 @@ IBM Research\\
     \bibliographystyle{acl_natbib}
     \bibliography{references}
     
-\appendix
-\section{Same-POS Neighbor Counts}\label{appendix:pos_hist}
-    
-    \begin{figure*}[t]
-        \begin{subfigure}[b]{\columnwidth}
-        \includegraphics[width=\columnwidth]{figs/NOUN_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
-        \includegraphics[width=\columnwidth]{figs/ADJ_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
-        \includegraphics[width=\columnwidth]{figs/VERB_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
-        \caption{CBOW}
-        \end{subfigure}
-        \begin{subfigure}[b]{\columnwidth}
-        \includegraphics[width=\columnwidth]{figs/NOUN_nn_100_fasttext_enwiki-20170501-clean_skipgram-300d-min500_pos.png}
-        \includegraphics[width=\columnwidth]{figs/ADJ_nn_100_fasttext_enwiki-20170501-clean_skipgram-300d-min500_pos.png}
-        \includegraphics[width=\columnwidth]{figs/VERB_nn_100_fasttext_enwiki-20170501-clean_skipgram-300d-min500_pos.png}
-        \caption{SGNS}
-        \end{subfigure}
-        \caption{Number of neighbor per POS for each pivot POS and for each window size,
-        for the CBOW~(a) and SGNS~(b) algorithms.
-        The number of same-POS neighbors is consistently decreasing with window size.
-        \label{fig:nn_pos_hist}}
-    \end{figure*}
-    
-    Figure~\ref{fig:nn_pos_hist} shows the the absolute number of neighbors per algorithm,
-    pivot POS and neighbor POS (\S\ref{sec:nn_exp}), for all window sizes we experimented with.
-    The number of nearest neighbors of the same POS is consistently decreasing with window size,
-    while the number of nearest neighbors of other POS are increasing or unaffected.
 \end{document}
