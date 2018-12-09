@@ -189,7 +189,7 @@ IBM Research\\
     \textit{Related} and \textit{Unrelated} are the top and bottom 30\% of the pairs,
     by benchmark score, respectively.
     \textit{P-value} is calculated using the hypergeometric
-    test, comparing the enrichment of same-POS pairs within related pairs,
+    test, comparing the enrichment of interchangeable pairs within related pairs,
     with a background of all related and unrelated pairs (\S\ref{sec:benchmark_exp}).
     \textit{\Delta \texttt{win}=2\to15 (\%)} is the relative change, in percents,
     of the model's performance (by Spearman correlation) when going from window size 2
@@ -229,9 +229,8 @@ IBM Research\\
     
     \paragraph{Discussion.}
     
-    In SimLex999 and in SimVerb3500, all pairs are same-POS by design:
-    in SimVerb all words are verbs,
-    and in SimLex every pair contains two words with the same part of speech.
+    In SimLex999 and in SimVerb3500, the words in each pair have the same part of speech by design
+    (in particluar, SimVerb3500 only contains verbs).
     Hypothesizing that the effect of window size is related to the model's
     implicitly learned concept of part of speech, we investigate this idea in the next section.
     
@@ -250,14 +249,16 @@ IBM Research\\
     such as \textit{the}, although they need not do so to be nouns. We can thus
     take appearance after \textit{the} to be a test for noun-hood.
     
-    Therefore, to quantify syntactic interchangeability (or substitutability)
+    We define two words to be (syntactically) \textit{interchangeable}
+    if they share the same part of speech.
+    We quantify interchangeability
     as a property of a word embedding model,
-    we measure the proportion of words with the same part of speech
+    as the proportion of words with the same part of speech
     within the list of nearest neighbors
     (that is, the most similar words according to the model)
     for each word in a pre-determined vocabulary.
-    The higher the same-POS ratio is in the list of nearest neighbors,
-    the more importance we assume the model implicitly places on syntactic interchangeability
+    The higher the interchangeability ratio is,
+    the more importance we assume the model implicitly places on interchangeability
     for the calculation of word similarity.
     
     \subsection{Interchangeability Analysis in Word Similarity Benchmarks}\label{sec:benchmark_exp}
@@ -271,10 +272,10 @@ IBM Research\\
     is considered ``unrelated'', the top 30\% as ``related'',
     and the middle 40\% are ignored.
     
-    \paragraph{Same-POS enrichment.}
+    \paragraph{Interchangeability enrichment.}
     
     Given the binary classification obtained from the human-annotated scores
-    for each benchmark, we can find the enrichment of same-POS pairs among
+    for each benchmark, we can find the enrichment of interchangeable pairs among
     related pairs.
     We use spaCy 2.0.11\footnote{\url{https://spacy.io}} (with the \texttt{en\_core\_web\_sm} model)
     to annotate the POS for each word in each benchmark
