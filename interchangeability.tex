@@ -86,7 +86,7 @@ IBM Research\\
     whose size (or maximal size) is a hyper-parameter of the training algorithm.
 
     In our experiments,
-    we discover a complex relationship between the context window size hyper-parameter
+    we discover a clear relationship between the context window size hyper-parameter
     and the performance of a word embedding model in estimating the similarity between words
     (\S\ref{sec:eval_exp}).
     To try to explain this relationship, we quantify how syntactic interchangeability
@@ -124,7 +124,7 @@ IBM Research\\
     representations.
     In general, they can be divided into intrinsic and extrinsic evaluation methods
     \cite{schnabel2015evaluation,chiu2016intrinsic,jastrzebski2017evaluate,alshargi2018concept2vec,bakarov2018survey}.
-    While most datasets measure the semantic similarity between words,
+    While most datasets report the semantic similarity between words,
     many datasets actually capture semantic relatedness
     \cite{hill2015simlex,avraham2016improving},
     or more complex relations such as analogy or the ability to categorize
@@ -188,7 +188,7 @@ IBM Research\\
     word similarity and relatedness benchmarks.
     \textit{Related} and \textit{Unrelated} are the top and bottom 30\% of the pairs,
     by benchmark score, respectively.
-    \textit{p-value} is calculated using the hypergeometric
+    \textit{P-value} is calculated using the hypergeometric
     test, comparing the enrichment of same-POS pairs within related pairs,
     with a background of all related and unrelated pairs (\S\ref{sec:benchmark_exp}).
     \textit{\Delta \texttt{win}=2\to15 (\%)} is the relative change, in percents,
@@ -278,7 +278,7 @@ IBM Research\\
     related pairs.
     We use spaCy 2.0.11\footnote{\url{https://spacy.io}} (with the \texttt{en\_core\_web\_sm} model)
     to annotate the POS for each word in each benchmark
-    pair (tagging them in isolation to select the most probably POS),
+    pair (tagging them in isolation to select the most probable POS),
     and look at the set of same-POS pairs in the benchmark.
     For each of the benchmark, we calculate a p-value using the hypergeometric
     test, comparing the enrichment of same-POS pairs within related pairs,
@@ -303,8 +303,7 @@ IBM Research\\
     To try and relate the results from \S\ref{sec:eval_exp} and \S\ref{sec:benchmark_exp},
     we measure the relation between window size to interchangeability
     by analyzing nearest neighbors in word embedding models.
-    The \textit{nearest neighbors} of a word are the words with the smallest
-    distance to it, measured by cosine similarity.
+    The \textit{nearest neighbors} of a word are the words with the highest cosine similarity with it.
         
     \paragraph{Collecting pivots.}
     
@@ -348,9 +347,9 @@ IBM Research\\
     SGNS & 78 & 66 & -0.95 & 66 & 39 & -0.94 & 51 & 41 & -0.92 
     \end{tabular}
     \caption{Percentage of same-POS neighbors per pivot POS for the smallest (1) and largest (15)
-        window sizes in our experiments, for the CBOW and SGNS algorithms.
-        The number of same-POS neighbors is significantly decreasing ($p<0.01$, two-tailed t-test)
-        with window size, according to the Pearson correlation (r).
+        windows in our experiments, for the CBOW and SGNS algorithms.
+        The number of same-POS neighbors has a strong negative Pearson correlation (r) with the window size
+        for windows 1 through 15 ($p<0.01$, two-tailed t-test).
     \label{tab:nn_pos_hist}}
     \end{table}
     
@@ -366,7 +365,7 @@ IBM Research\\
     
     The results clearly suggest that for \textit{both} CBOW and SGNS,
     models with a larger window size are less likely to consider words
-    of the same POS as related.
+    of the same POS as strongly related.
     That is, syntactic interchangeability is negatively correlated with window size.
     This is in sharp contrast to our results from \S\ref{sec:eval_exp},
     where performance for CBOW on almost all benchmarks
@@ -428,7 +427,7 @@ IBM Research\\
     Many other relations are of interest to the NLP
     community, such as syntactic dependency relations,
     and semantic relations like hypernymy and synonymy.
-    Furthermore, while a similar analysis could be applied to other word
+    Furthermore, a similar analysis could be applied to other word
     embedding hyper-parameters, such as the vector dimension.
     While we used a constant vector dimension of 300 in our experiments,
     it is an open question whether models with different vector dimensions
