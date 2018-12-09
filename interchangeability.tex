@@ -59,7 +59,7 @@ IBM Research\\
 
     \section{Introduction}\label{sec:introduction}
 
-    Word embedding models \cite{mikolov2013efficient,pennington2014glove,levy2015improving}
+    Word embedding algorithms \cite{mikolov2013efficient,pennington2014glove,levy2015improving}
     attempt to capture the semantic space of words
     in a metric space of real-valued vectors.
     While it is common knowledge that the hyper-parameters used to train these
@@ -73,25 +73,25 @@ IBM Research\\
     As a test case, we experiment with fastText \cite{bojanowski2016enriching},
     evaluating it on benchmarks designed to measure how well a model captures the degree
     of similarity between words (\S\ref{sec:benchmarks}).
-    We take the context window size as the hyper-parameter,
-    and syntactic interchangeability of words as the relation under investigation,
-    expressed by the part of speech (POS; see \S\ref{sec:interchangeability}).
     
-    \paragraph{Context window size.}
-    Word embedding algorithms learn vector representations for words,
-    using co-occurrences from a text corpus,
-    based on the distributional hypothesis \cite{harris1954distributional}.
-    Co-occurrences are usually extracted by finding, for each word token, all
-    words within a window around that word,
+    In our experiments, we investigate how
+    \textit{syntactic interchangeability} of words,
+    represented by their part of speech (\S\ref{sec:interchangeability}),
+    is expressed in word embedding models and evaluation benchmarks.
+    
+    Based on the distributional hypothesis \cite{harris1954distributional},
+    word embeddings are learned from text
+    by first extracting co-occurrences---finding, for each word token, all
+    words within a context window around it,
     whose size (or maximal size) is a hyper-parameter of the training algorithm.
+    Word vectors are then learned by predicting these co-occurrences or
+    factorizing the co-occurrence matrix.
 
-    In our experiments,
-    we discover a clear relationship between the context window size hyper-parameter
-    and the performance of a word embedding model in estimating the similarity between words
-    (\S\ref{sec:eval_exp}).
+    We discover a clear relationship between the context window size hyper-parameter
+    and the performance of a word embedding model in estimating the similarity between words.
     To try to explain this relationship, we quantify how syntactic interchangeability
-    is reflected in each benchmark (\S\ref{sec:benchmark_exp}),
-    and its relation to the context window size (\S\ref{sec:interchangeability_exp}).
+    is reflected in each benchmark,
+    and its relation to the context window size.
     Our experiments reveal that context window size is negatively correlated
     with the number of same-POS words among the nearest neighbors of words,
     but that this fact is not enough to explain the complex interaction between
@@ -416,7 +416,7 @@ IBM Research\\
     the ability of word embedding models
     to capture the interchangeability of words in syntactically similar contexts,
     we measure interchangeability as reflected by words' part of speech.
-    We show that different benchmarks have different notion of the role of
+    We show that different benchmarks have different notions of the role of
     syntactic interchangeability in word similarity,
     and that models with a larger window size
     are less likely to treat words of the same part of speech as nearest neighbors
