@@ -410,17 +410,22 @@ IBM Research\\
 
     We investigated the effect of the context window size hyper-parameter
     on the performance on word similarity benchmarks.
-    We showed that models trained with larger windows
-    tend to perform better for the CBOW algorithm, but worse for the SGNS algorithm.
-    Hypothesizing that the effect is related to
-    the ability of word embedding models
-    to capture the interchangeability of words in syntactically similar contexts,
-    we measure interchangeability as reflected by words' part of speech.
-    We show that different benchmarks have different notions of the role of
-    syntactic interchangeability in word similarity,
-    and that models with a larger window size
-    are less likely to treat words of the same part of speech as nearest neighbors
-    in the vector space.
+    We showed that
+    (1) increasing the window size results in a lower probability of interchangeable
+    nearest neighbors for both CBOW and SGNS algorithms;
+    (2) in some widely used benchmarks,
+    interchangeability increases the probability of similarity or relatedness;
+    (3) increasing the window size typically improves performance
+    in predicting similarity or relatedness for CBOW,
+    but has little impact on SGNS.
+    
+    SimLex999 and SimVerb3500 proved to be exceptions to both (2) and (3),
+    since all pairs in them are interchangeable by construction,
+    but on them, increasing the window size has no effect for CBOW
+    and negative impact for SGNS.
+    
+    This contradiction is presented as a challenge to the community,
+    and could perhaps be explained by other factors affected by window size.
     
     Our investigation focused on a specific relation between words,
     namely whether they share a part of speech.
