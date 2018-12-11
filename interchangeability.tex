@@ -336,9 +336,10 @@ IBM Research\\
     
     \paragraph{Calculating nearest neighbor POS.}
     
-    For each word in our pivot lists, we calculate the 100 nearest neighbors
-    according to each learned word embedding model, filter these neighbors to
-    keep only words in the spaCy vocabulary, and keep the top 10 valid neighbors.
+    We find the 100 nearest neighbors for each word in our pivot lists,
+    according to each fastText model with windows 1 through 15.
+    We filter these neighbors to
+    keep only words in the spaCy vocabulary, and inspect the remaining top 10.
     Again using spaCy, we tag the POS of each neighbor in the result.
     We subsequently calculate a histogram, for each POS $x$, of its
     \textit{neighbor-POS} $y$, that is, the POS assigned to the neighbors of
@@ -357,10 +358,10 @@ IBM Research\\
     \normalsize CBOW & 79 & 70 & -0.96 & 72 & 48 & -0.93 & 55 & 41 & -0.91 \\
     \normalsize SGNS & 78 & 66 & -0.95 & 66 & 39 & -0.94 & 51 & 41 & -0.92 
     \end{tabular}
-    \caption{Percentage of same-POS neighbors per pivot POS for the smallest (1) and largest (15)
-        windows in our experiments, for the CBOW and SGNS algorithms.
-        The number of same-POS neighbors has a strong negative Pearson correlation (r) with the window size
-        for windows 1 through 15 ($p<0.01$, two-tailed t-test).
+    \caption{Percentage of interchangeable neighbors per pivot POS for the smallest (1) and largest (15)
+        windows in our experiment, for the CBOW and SGNS algorithms.
+        The number of interchangeable neighbors has a strong negative Pearson correlation (r) with window size
+        for windows 1 to 15 ($p<0.01$, two-tailed t-test).
     \label{tab:nn_pos_hist}}
     \end{table}
     
@@ -386,7 +387,7 @@ IBM Research\\
     We also find the conclusion to contradict the impression regarding SGNS,
     where SimLex999 and SimVerb3500 showed worse performance for larger windows:
     if POS should not play a role in these benchmarks,
-    then models with a bias toward POS (i.e., models with lower windows)
+    then models with a bias toward syntactic interchangeability (i.e., models with lower windows)
     should perform \textit{worse} on these benchmarks.
     
     
@@ -425,7 +426,7 @@ IBM Research\\
     (1) increasing the window size results in a lower probability of interchangeable
     nearest neighbors for both CBOW and SGNS algorithms;
     (2) in some widely used benchmarks,
-    interchangeability increases the probability of similarity or relatedness;
+    syntactic interchangeability increases the probability of similarity or relatedness;
     (3) increasing the window size typically improves performance
     in predicting similarity or relatedness for CBOW,
     but has little impact on SGNS.
