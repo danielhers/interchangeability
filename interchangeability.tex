@@ -30,6 +30,11 @@
 \usepackage{multirow}
 
 \title{Syntactic Interchangeability in Word Embedding Models}
+\hyphenation{WordSim353}
+\hyphenation{SimLex999}
+\hyphenation{MTurk287}
+\hyphenation{MTurk771}
+\hyphenation{SimVerb3500}
 
 \author{
 Daniel Hershcovich \qquad Assaf Toledo \qquad Alon Halfon \qquad Noam Slonim \\
@@ -103,6 +108,7 @@ IBM Research\\
         \includegraphics[width=\columnwidth]{figs/similarities_fasttext_enwiki-20170501-clean_cbow-300d-min500_eval.png}
         \caption{CBOW}
         \end{subfigure}
+        \hfill
         \begin{subfigure}[b]{\columnwidth}
         \includegraphics[width=\columnwidth]{figs/similarities_fasttext_enwiki-20170501-clean_skipgram-300d-min500_eval.png}
         \caption{SGNS}
@@ -130,13 +136,13 @@ IBM Research\\
     or more complex relations such as analogy or the ability to categorize
     words based on the distributed representation encoded in word embeddings.
     We focus on similarity and relatedness, and evaluate word embedding models
-    on pairs in several common benchmarks.
+    on several common benchmarks.
     
     \subsection{Data}\label{sec:data}
     We learn word embeddings from English Wikipedia,
-    using a dump from May 1, 2017\footnote{\url{https://dumps.wikimedia.org/enwiki}}.
+    using a dump from May 1, 2017.\footnote{\url{dumps.wikimedia.org/enwiki}}
     The data is preprocessed using a publicly available preprocessing
-    script\footnote{\url{http://mattmahoney.net/dc/textdata.html}},
+    script,\footnote{\url{mattmahoney.net/dc/textdata.html}}
     extracting text, removing nonalphanumeric characters,
     converting digits to text, and lowercasing the text.
     
@@ -157,44 +163,46 @@ IBM Research\\
     \subsection{Hyper-parameters}\label{sec:hyperparams}
     We use fastText \cite{bojanowski2016enriching} to learn
     300-dimensional word embedding models,
-    using both the CBOW and SGNS algorithms \cite{mikolov2013efficient}.
+    using both the CBOW (continuous bag-of-words) and
+    SGNS (skip-gram with negative sampling) algorithms \cite{mikolov2013efficient}.
     The context window size varies from 1 up to 15.
     We set the minimal word occurrence count to 500, to avoid
     very rare words or uncommon spelling errors from skewing the results.
     All other hyper-parameters are set to their default values.
-    To calculate the similarity between words, we use cosine similarity
-    between their vectors.
+%    To calculate the similarity between words, we use cosine similarity
+%    between their vectors.
     
     \begin{table*}[th]
     \centering
     \small
+    \def\arraystretch{1.125}
     \begin{tabular}{l|c||cc||cc|cc|c}
-    && \multicolumn{2}{c||}{\bf \Delta \texttt{win}=2\to15 (\%)}
-    & \multicolumn{2}{c|}{\bf \# Related} & \multicolumn{2}{c|}{\bf \# Unrelated} \\
-    \bf Benchmark & \bf Size& \bf CBOW & \bf SGNS
-    & \bf All & \bf Same-POS & \bf All & \bf Same-POS & \bf p-value \\
+    && \multicolumn{2}{c||}{\normalsize \bf \Delta \texttt{win}=2\to15 (\%)}
+    & \multicolumn{2}{c|}{\normalsize \bf \# Related} & \multicolumn{2}{c|}{\normalsize \bf \# Unrelated} \\
+    \normalsize \bf Benchmark & \normalsize \bf Size& \normalsize \bf CBOW & \normalsize \bf SGNS
+    & \normalsize \bf All & \normalsize \bf Same-POS & \normalsize \bf All & \normalsize \bf Same-POS & \normalsize \bf p-value \\
     \hline
-    WordSim353 & 353 & 24 & -3 & 122 & 107 & 53 & 40 & 0.038 \\
-    WordSim353-S & 203 & 13 & -6 & 60 & 53 & 53 & 40 & 0.061 \\
-    WordSim353-R & 252 & 42 & 4 & 104 & 89 & 39 & 31 & 0.26 \\
-    SimLex999 & 999 & -1 & -20 & 234 & 199 & 334 & 295 & 0.897 \\
-    RW & 2034 & 37 & -12 & 944 & 555 & 262 & 144 & 0.149 \\
-    MEN & 3000 & 9 & -2 & 791 & 564 & 781 & 439 & $3\cdot10^{-10}$ \\
-    MTurk287 & 287 & 8 & -5 & 49 & 39 & 119 & 68 & 0.004 \\
-    MTurk771 & 771 & 12 & -5 & 204 & 153 & 200 & 146 & 0.365 \\
-    SimVerb3500 & 3500 & 6 & -30 & 633 & 265 & 1217 & 566 & 0.974
+    \normalsize WordSim353 & 353 & 24 & -3 & 122 & 107 & 53 & 40 & 0.038 \\
+    \normalsize WordSim353-S & 203 & 13 & -6 & 60 & 53 & 53 & 40 & 0.061 \\
+    \normalsize WordSim353-R & 252 & 42 & 4 & 104 & 89 & 39 & 31 & 0.26 \\
+    \normalsize SimLex999 & 999 & -1 & -20 & 234 & 199 & 334 & 295 & 0.897 \\
+    \normalsize RW & 2034 & 37 & -12 & 944 & 555 & 262 & 144 & 0.149 \\
+    \normalsize MEN & 3000 & 9 & -2 & 791 & 564 & 781 & 439 & $3\cdot10^{-10}$ \\
+    \normalsize MTurk287 & 287 & 8 & -5 & 49 & 39 & 119 & 68 & 0.004 \\
+    \normalsize MTurk771 & 771 & 12 & -5 & 204 & 153 & 200 & 146 & 0.365 \\
+    \normalsize SimVerb3500 & 3500 & 6 & -30 & 633 & 265 & 1217 & 566 & 0.974
     \end{tabular}
     \caption{Analysis of interchangeability (by same-POS) in
     word similarity and relatedness benchmarks.
+    \textit{\Delta \texttt{win}=2\to15 (\%)} is the relative change, in percents,
+    of the model's performance (by Spearman correlation) when going from window size 2
+    to window size 15, for the CBOW
+    and SGNS algorithms (\S\ref{sec:eval_exp}).
     \textit{Related} and \textit{Unrelated} are the top and bottom 30\% of the pairs,
     by benchmark score, respectively.
     \textit{P-value} is calculated using the hypergeometric
     test, comparing the enrichment of interchangeable pairs within related pairs,
     with a background of all related and unrelated pairs (\S\ref{sec:benchmark_exp}).
-    \textit{\Delta \texttt{win}=2\to15 (\%)} is the relative change, in percents,
-    of the model's performance (by Spearman correlation) when going from window size 2
-    to window size 15, for the CBOW (continuous bag-of-words)
-    and SGNS (skip-gram with negative sampling) algorithms (\S\ref{sec:eval_exp}).
     \label{tab:benchmark_enrichment}}
     \end{table*}
     
@@ -223,14 +231,14 @@ IBM Research\\
     in percents, with the increase of window size from 2 to 15,
     are shown in Table~\ref{tab:benchmark_enrichment} (\textit{\Delta \texttt{win}=2\to15}).
     Interestingly, CBOW exhibits a positive correlation of window size with model's performance
-    for all benchmarks but SimLex999 and SimVerb3500,
+    for all benchmarks but SimLex999,
     while performance for SGNS barely changes with window size,
-    except for SimLex999 and SimVerb3500, where we see a \textit{negative} correlation.
+    except for SimLex999 and SimVerb3500, where we see a strong \textit{negative} correlation.
     
     \paragraph{Discussion.}
     
     In SimLex999 and in SimVerb3500, the words in each pair have the same part of speech by design
-    (in particluar, SimVerb3500 only contains verbs).
+    (in particular, SimVerb3500 only contains verbs).
     Hypothesizing that the effect of window size is related to the model's
     implicitly learned concept of part of speech, we investigate this idea in the next section.
     
@@ -277,23 +285,23 @@ IBM Research\\
     Given the binary classification obtained from the human-annotated scores
     for each benchmark, we can find the enrichment of interchangeable pairs among
     related pairs.
-    We use spaCy 2.0.11\footnote{\url{https://spacy.io}} (with the \texttt{en\_core\_web\_sm} model)
+    We use spaCy 2.0.11\footnote{\url{spacy.io}} (with the \texttt{en\_core\_web\_sm} model)
     to annotate the POS for each word in each benchmark
     pair (tagging them in isolation to select the most probable POS),
     and look at the set of same-POS pairs in the benchmark.
     For each of the benchmark, we calculate a p-value using the hypergeometric
     test, comparing the enrichment of same-POS pairs within related pairs,
-    with a background of all related and unrelated pairs (ignoring ones in
+    with a background distribution of all related and unrelated pairs (ignoring ones in
     the middle 40\% range of scores).
     
     \paragraph{Results.}
     
-    Table~\ref{tab:benchmark_enrichment} shows the enrichment of same-POS pairs
+    Table~\ref{tab:benchmark_enrichment} shows the enrichment of interchangeable pairs
     among related and unrelated pairs for each benchmark.
     For WordSim353, MEN and MTurk287, the set of related pairs
-    contains significantly more same-POS pairs than the background
+    contains significantly more interchangeable pairs than the background
     set ($p<0.05$),\footnote{The fact that not all pairs in SimLex999 and SimVerb3500
-    are judged as same-POS
+    are judged as interchangeable
     in our experiment is due to ambiguity: for some words, spaCy selected a POS
     which is not the one intended when constructing the benchmark.}
     suggesting that these benchmarks are particularly sensitive to POS.
@@ -302,9 +310,10 @@ IBM Research\\
     \subsection{Nearest Neighbor Analysis}\label{sec:interchangeability_exp}
     
     To try and relate the results from \S\ref{sec:eval_exp} and \S\ref{sec:benchmark_exp},
-    we measure the relation between window size to interchangeability
+    we measure the relation between window size and interchangeability
     by analyzing nearest neighbors in word embedding models.
-    The \textit{nearest neighbors} of a word are the words with the highest cosine similarity with it.
+    In our experiment, the \textit{nearest neighbors} of a word are the words
+    with the highest cosine similarity between their vectors.
         
     \paragraph{Collecting pivots.}
     
@@ -338,14 +347,15 @@ IBM Research\\
     \begin{table}[t]
     \centering
     \small
-    \setlength\tabcolsep{4pt}
+    \setlength\tabcolsep{3.5pt}
+    \def\arraystretch{1.125}
     \begin{tabular}{l|ccc|ccc|ccc}
-    \multirow{2}{1cm}{\bf Algorihtm}
-    & \multicolumn{3}{c|}{\bf NOUN} & \multicolumn{3}{c|}{\bf ADJ} & \multicolumn{3}{c}{\bf VERB} \\
-    & 1 & 15 & r & 1 & 15 & r & 1 & 15 & r \\
+    \multirow{2}{1cm}{\normalsize \bf Algorithm}
+    & \multicolumn{3}{c|}{\normalsize \bf NOUN} & \multicolumn{3}{c|}{\normalsize \bf ADJ} & \multicolumn{3}{c}{\normalsize \bf VERB} \\
+    & \normalsize 1 & \normalsize 15 & \normalsize r & \normalsize 1 & \normalsize 15 & \normalsize r & \normalsize 1 & \normalsize 15 & \normalsize r \\
     \hline
-    CBOW & 79 & 70 & -0.96 & 72 & 48 & -0.93 & 55 & 41 & -0.91 \\
-    SGNS & 78 & 66 & -0.95 & 66 & 39 & -0.94 & 51 & 41 & -0.92 
+    \normalsize CBOW & 79 & 70 & -0.96 & 72 & 48 & -0.93 & 55 & 41 & -0.91 \\
+    \normalsize SGNS & 78 & 66 & -0.95 & 66 & 39 & -0.94 & 51 & 41 & -0.92 
     \end{tabular}
     \caption{Percentage of same-POS neighbors per pivot POS for the smallest (1) and largest (15)
         windows in our experiments, for the CBOW and SGNS algorithms.
