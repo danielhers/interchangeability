@@ -142,9 +142,9 @@ IBM Research\\
     
     \subsection{Data}\label{sec:data}
     We learn word embeddings from English Wikipedia,
-    using a dump from May 1, 2017.\footnote{\url{dumps.wikimedia.org/enwiki}}
+    using a dump from May 1, 2017.\footnote{\url{https://dumps.wikimedia.org/enwiki}}
     The data is preprocessed using a publicly available preprocessing
-    script,\footnote{\url{mattmahoney.net/dc/textdata.html}}
+    script,\footnote{\url{http://mattmahoney.net/dc/textdata.html}}
     extracting text, removing nonalphanumeric characters,
     converting digits to text, and lowercasing the text.
     
@@ -287,7 +287,7 @@ IBM Research\\
     Given the binary classification obtained from the human-annotated scores
     for each benchmark, we can find the enrichment of interchangeable pairs among
     related pairs.
-    We use spaCy 2.0.11\footnote{\url{spacy.io}} (with the \texttt{en\_core\_web\_sm} model)
+    We use spaCy 2.0.11\footnote{\url{https://spacy.io}} (with the \texttt{en\_core\_web\_sm} model)
     to annotate the POS for each word in each benchmark
     pair (tagging them in isolation to select the most probable POS),
     and look at the set of same-POS pairs in the benchmark.
