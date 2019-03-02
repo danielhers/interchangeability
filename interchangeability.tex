@@ -168,7 +168,8 @@ IBM Research\\
     using both the CBOW (continuous bag-of-words) and
     SGNS (skip-gram with negative sampling) algorithms \cite{mikolov2013efficient}.
     The context window size varies from 1 up to 15.
-    We set the minimal word occurrence count to 500, to avoid
+    We include only all words occurring 500 times or more
+    (including function words), to avoid
     very rare words or uncommon spelling errors from skewing the results.
     All other hyper-parameters are set to their default values.
 %    To calculate the similarity between words, we use cosine similarity
