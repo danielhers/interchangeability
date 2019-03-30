@@ -103,7 +103,7 @@ IBM Research\\
     with the number of same-POS words among the nearest neighbors of words,
     but that this fact is not enough to explain the complex interaction between
     context window size and performance on word similarity
-    benchmarks.\footnote{Our code will be made available upon publication.}
+    benchmarks.\footnote{Our code and data are available at \url{https://github.com/danielhers/interchangeability}.}
     
     \begin{figure*}[th]
         \begin{subfigure}[b]{\columnwidth}
@@ -219,10 +219,6 @@ IBM Research\\
     
     \paragraph{Results.}
     
-%    Table~\ref{tab:benchmark_results} displays the performance of the CBOW and SGNS
-%    algorithms on each benchmark, with window sizes 2 and 15,
-%    and the relative improvement (or deterioration),
-%    in percents, with the increase of window size.
     Figure~\ref{fig:benchmark_correlation} displays the performance of the CBOW and SGNS
     algorithms on each benchmark, with window sizes 1 to 15.
     Apart from a small dip between windows 1 and 2 for
@@ -322,7 +318,7 @@ IBM Research\\
     
     We create a word list for each of the three most
     common parts of speech:
-    nouns, adjectives and verbs.\footnote{Our word lists will be released upon publication.}
+    nouns, adjectives and verbs.
     For each POS, we list all lemmas of all synsets of that POS from
     WordNet \cite{miller1998wordnet}.
     To ``purify'' the lists and avoid noise from homonyms,
@@ -374,7 +370,32 @@ IBM Research\\
     For nouns, adjectives and verbs, we consistently see a decrease in
     the  number of same-POS neighbors when we increase the window size,
     relative to the total number of nearest
-    neighbors.\footnote{See Supplementary Material for the full data.}
+    neighbors.
+    
+    
+    Figure~\ref{fig:nn_pos_hist} shows the the absolute number of neighbors per algorithm,
+    pivot POS and neighbor POS, for all window sizes we experimented with.
+    The number of nearest neighbors of the same POS is consistently decreasing with window size,
+    while the number of nearest neighbors of other POS are increasing or unaffected.
+    
+    \begin{figure*}[h]
+        \begin{subfigure}[b]{.5\textwidth}
+        \includegraphics[width=\textwidth]{figs/NOUN_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
+        \includegraphics[width=\textwidth]{figs/ADJ_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
+        \includegraphics[width=\textwidth]{figs/VERB_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
+        \caption{CBOW}
+        \end{subfigure}
+        \begin{subfigure}[b]{.5\textwidth}
+        \includegraphics[width=\textwidth]{figs/NOUN_nn_100_fasttext_enwiki-20170501-clean_skipgram-300d-min500_pos.png}
+        \includegraphics[width=\textwidth]{figs/ADJ_nn_100_fasttext_enwiki-20170501-clean_skipgram-300d-min500_pos.png}
+        \includegraphics[width=\textwidth]{figs/VERB_nn_100_fasttext_enwiki-20170501-clean_skipgram-300d-min500_pos.png}
+        \caption{SGNS}
+        \end{subfigure}
+        \caption{Number of neighbor per POS for each pivot POS and for each window size,
+        for the CBOW~(a) and SGNS~(b) algorithms.
+        The number of same-POS neighbors is consistently decreasing with window size.
+        \label{fig:nn_pos_hist}}
+    \end{figure*}
     
     \paragraph{Discussion.}
     
@@ -394,31 +415,6 @@ IBM Research\\
     should perform \textit{worse} on these benchmarks.
     
     
-%    \begin{table}[t]
-%    \centering
-%    \setlength\tabcolsep{3.5pt}
-%    \begin{tabular}{l|ccc|ccc}
-%    & \multicolumn{3}{c|}{\bf CBOW} & \multicolumn{3}{c}{\bf SGNS} \\
-%    \bf Benchmark & 2 & 15 & \Delta & 2 & 15 & \Delta \\
-%    \hline
-%    WordSim353 & 0.45 & 0.56 & 24 & 0.61 & 0.59 & -3 \\
-%    WordSim353-S & 0.60 & 0.68 & 13 & 0.73 & 0.69 & -6 \\
-%    WordSim353-R & 0.34 & 0.48 & 42 & 0.50 & 0.52 & 4 \\
-%    SimLex999 & 0.37 & 0.36 & -1 & 0.38 & 0.30 & -20 \\
-%    RW & 0.12 & 0.17 & 37 & 0.13 & 0.11 & -12 \\
-%    MEN & 0.70 & 0.76 & 9 & 0.75 & 0.74 & -2 \\
-%    MTurk287 & 0.61 & 0.66 & 8 & 0.67 & 0.64 & -5 \\
-%    MTurk771 & 0.57 & 0.64 & 12 & 0.64 & 0.61 & -5 \\
-%    SimVerb3500 & 0.21 & 0.22 & 6 & 0.26 & 0.18 & -30
-%    \end{tabular}
-%    \caption{Performance of the CBOW and SGNS algorithms on each benchmark,
-%        with window sizes 2 and 15
-%        (measured by Spearman correlation between the benchmark score
-%        and the word embedding cosine similarity),
-%        and the relative improvement (or deterioration),
-%        in percents, with the increase of window size.
-%    \label{tab:benchmark_results}}
-%    \end{table}
     
 
 \section{Conclusion}\label{sec:conclusion}
@@ -453,6 +449,10 @@ IBM Research\\
     it is an open question whether models with different vector dimensions
     differ with respect to their tendency to capture different word relations.
     Future work will extend our analysis to other relations and hyper-parameters.
+
+\section*{Acknowledgments}
+
+We thank the anonymous reviewers for their helpful comments.
 
     \bibliographystyle{acl_natbib}
     \bibliography{references}
