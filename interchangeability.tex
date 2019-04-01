@@ -1,4 +1,3 @@
-%
 % File interchangeability.tex
 %
 \documentclass[11pt,a4paper]{article}
@@ -19,8 +18,6 @@
 
 \usepackage[utf8]{inputenc} % allow utf-8 input
 \usepackage[T1]{fontenc}    % use 8-bit T1 fonts
-\usepackage{hyperref}       % hyperlinks
-\usepackage{url}            % simple URL typesetting
 \usepackage{booktabs}       % professional-quality tables
 \usepackage{amsfonts}       % blackboard math symbols
 \usepackage{nicefrac}       % compact symbols for 1/2, etc.
@@ -29,12 +26,13 @@
 \usepackage{subcaption}
 \usepackage{multirow}
 
+%\hyphenation{WordSim353}
+%\hyphenation{SimLex999}
+%\hyphenation{MTurk287}
+%\hyphenation{MTurk771}
+%\hyphenation{SimVerb3500}
+
 \title{Syntactic Interchangeability in Word Embedding Models}
-\hyphenation{WordSim353}
-\hyphenation{SimLex999}
-\hyphenation{MTurk287}
-\hyphenation{MTurk771}
-\hyphenation{SimVerb3500}
 
 \author{
 Daniel Hershcovich \qquad Assaf Toledo \qquad Alon Halfon \qquad Noam Slonim \\
@@ -107,12 +105,12 @@ IBM Research\\
     
     \begin{figure*}[th]
         \begin{subfigure}[b]{\columnwidth}
-        \includegraphics[width=\columnwidth]{figs/similarities_fasttext_enwiki-20170501-clean_cbow-300d-min500_eval.png}
+        \includegraphics[width=\columnwidth]{similarities_fasttext_enwiki-20170501-clean_cbow-300d-min500_eval.png}
         \caption{CBOW}
         \end{subfigure}
         \hfill
         \begin{subfigure}[b]{\columnwidth}
-        \includegraphics[width=\columnwidth]{figs/similarities_fasttext_enwiki-20170501-clean_skipgram-300d-min500_eval.png}
+        \includegraphics[width=\columnwidth]{similarities_fasttext_enwiki-20170501-clean_skipgram-300d-min500_eval.png}
         \caption{SGNS}
         \end{subfigure}
         \caption{Performance of the CBOW~(a) and SGNS~(b) algorithms on each benchmark,
@@ -180,24 +178,24 @@ IBM Research\\
     \small
     \def\arraystretch{1.125}
     \begin{tabular}{l|c||cc||cc|cc|c}
-    && \multicolumn{2}{c||}{\normalsize \bf \Delta \texttt{win}=2\to15 (\%)}
-    & \multicolumn{2}{c|}{\normalsize \bf \# Related} & \multicolumn{2}{c|}{\normalsize \bf \# Unrelated} \\
-    \normalsize \bf Benchmark & \normalsize \bf Size& \normalsize \bf CBOW & \normalsize \bf SGNS
-    & \normalsize \bf All & \normalsize \bf Same-POS & \normalsize \bf All & \normalsize \bf Same-POS & \normalsize \bf p-value \\
+    && \multicolumn{2}{c||}{\bf $\Delta \mathtt{win}=2\to 15 (\%)$}
+    & \multicolumn{2}{c|}{\bf $\#$ Related} & \multicolumn{2}{c|}{\bf $\#$ Unrelated} \\
+    \bf Benchmark & \bf Size& \bf CBOW & \bf SGNS
+    & \bf All & \bf Same-POS & \bf All & \bf Same-POS & \bf p-value \\
     \hline
-    \normalsize WordSim353 & 353 & 24 & -3 & 122 & 107 & 53 & 40 & 0.038 \\
-    \normalsize WordSim353-S & 203 & 13 & -6 & 60 & 53 & 53 & 40 & 0.061 \\
-    \normalsize WordSim353-R & 252 & 42 & 4 & 104 & 89 & 39 & 31 & 0.26 \\
-    \normalsize SimLex999 & 999 & -1 & -20 & 234 & 199 & 334 & 295 & 0.897 \\
-    \normalsize RW & 2034 & 37 & -12 & 944 & 555 & 262 & 144 & 0.149 \\
-    \normalsize MEN & 3000 & 9 & -2 & 791 & 564 & 781 & 439 & $3\cdot10^{-10}$ \\
-    \normalsize MTurk287 & 287 & 8 & -5 & 49 & 39 & 119 & 68 & 0.004 \\
-    \normalsize MTurk771 & 771 & 12 & -5 & 204 & 153 & 200 & 146 & 0.365 \\
-    \normalsize SimVerb3500 & 3500 & 6 & -30 & 633 & 265 & 1217 & 566 & 0.974
+    WordSim353 & 353 & 24 & -3 & 122 & 107 & 53 & 40 & 0.038 \\
+    WordSim353-S & 203 & 13 & -6 & 60 & 53 & 53 & 40 & 0.061 \\
+    WordSim353-R & 252 & 42 & 4 & 104 & 89 & 39 & 31 & 0.26 \\
+    SimLex999 & 999 & -1 & -20 & 234 & 199 & 334 & 295 & 0.897 \\
+    RW & 2034 & 37 & -12 & 944 & 555 & 262 & 144 & 0.149 \\
+    MEN & 3000 & 9 & -2 & 791 & 564 & 781 & 439 & $3\cdot10^{-10}$ \\
+    MTurk287 & 287 & 8 & -5 & 49 & 39 & 119 & 68 & 0.004 \\
+    MTurk771 & 771 & 12 & -5 & 204 & 153 & 200 & 146 & 0.365 \\
+    SimVerb3500 & 3500 & 6 & -30 & 633 & 265 & 1217 & 566 & 0.974
     \end{tabular}
     \caption{Analysis of interchangeability (by same-POS) in
     word similarity and relatedness benchmarks.
-    \textit{\Delta \texttt{win}=2\to15 (\%)} is the relative change, in percents,
+    $\Delta \mathtt{win}=2\to 15 (\%)$ is the relative change, in percents,
     of the model's performance (by Spearman correlation) when going from window size 2
     to window size 15, for the CBOW
     and SGNS algorithms (\S\ref{sec:eval_exp}).
@@ -228,7 +226,7 @@ IBM Research\\
     
     The relative improvement (or deterioration),
     in percents, with the increase of window size from 2 to 15,
-    are shown in Table~\ref{tab:benchmark_enrichment} (\textit{\Delta \texttt{win}=2\to15}).
+    are shown in Table~\ref{tab:benchmark_enrichment} ($\Delta \mathtt{win}=2\to 15 (\%)$).
     Interestingly, CBOW exhibits a positive correlation of window size with model's performance
     for all benchmarks but SimLex999,
     while performance for SGNS barely changes with window size,
@@ -358,12 +356,12 @@ IBM Research\\
     \setlength\tabcolsep{3.5pt}
     \def\arraystretch{1.125}
     \begin{tabular}{l|ccc|ccc|ccc}
-    \multirow{2}{1cm}{\normalsize \bf Algorithm}
-    & \multicolumn{3}{c|}{\normalsize \bf NOUN} & \multicolumn{3}{c|}{\normalsize \bf ADJ} & \multicolumn{3}{c}{\normalsize \bf VERB} \\
-    & \normalsize 1 & \normalsize 15 & \normalsize r & \normalsize 1 & \normalsize 15 & \normalsize r & \normalsize 1 & \normalsize 15 & \normalsize r \\
+    \multirow{2}{1cm}{\bf Algorithm}
+    & \multicolumn{3}{c|}{\bf NOUN} & \multicolumn{3}{c|}{\bf ADJ} & \multicolumn{3}{c}{\bf VERB} \\
+    & 1 & 15 & r & 1 & 15 & r & 1 & 15 & r \\
     \hline
-    \normalsize CBOW & 79 & 70 & -0.96 & 72 & 48 & -0.93 & 55 & 41 & -0.91 \\
-    \normalsize SGNS & 78 & 66 & -0.95 & 66 & 39 & -0.94 & 51 & 41 & -0.92 
+    CBOW & 79 & 70 & -0.96 & 72 & 48 & -0.93 & 55 & 41 & -0.91 \\
+    SGNS & 78 & 66 & -0.95 & 66 & 39 & -0.94 & 51 & 41 & -0.92 
     \end{tabular}
     \caption{Percentage of interchangeable neighbors per pivot POS for the smallest (1) and largest (15)
         windows in our experiment, for the CBOW and SGNS algorithms.
@@ -388,15 +386,15 @@ IBM Research\\
     
     \begin{figure*}[h]
         \begin{subfigure}[b]{.5\textwidth}
-        \includegraphics[width=\textwidth]{figs/NOUN_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
-        \includegraphics[width=\textwidth]{figs/ADJ_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
-        \includegraphics[width=\textwidth]{figs/VERB_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
+        \includegraphics[width=\textwidth]{NOUN_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
+        \includegraphics[width=\textwidth]{ADJ_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
+        \includegraphics[width=\textwidth]{VERB_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
         \caption{CBOW}
         \end{subfigure}
         \begin{subfigure}[b]{.5\textwidth}
-        \includegraphics[width=\textwidth]{figs/NOUN_nn_100_fasttext_enwiki-20170501-clean_skipgram-300d-min500_pos.png}
-        \includegraphics[width=\textwidth]{figs/ADJ_nn_100_fasttext_enwiki-20170501-clean_skipgram-300d-min500_pos.png}
-        \includegraphics[width=\textwidth]{figs/VERB_nn_100_fasttext_enwiki-20170501-clean_skipgram-300d-min500_pos.png}
+        \includegraphics[width=\textwidth]{NOUN_nn_100_fasttext_enwiki-20170501-clean_skipgram-300d-min500_pos.png}
+        \includegraphics[width=\textwidth]{ADJ_nn_100_fasttext_enwiki-20170501-clean_skipgram-300d-min500_pos.png}
+        \includegraphics[width=\textwidth]{VERB_nn_100_fasttext_enwiki-20170501-clean_skipgram-300d-min500_pos.png}
         \caption{SGNS}
         \end{subfigure}
         \caption{Number of neighbor per POS for each pivot POS and for each window size,
