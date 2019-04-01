@@ -1,3 +1,4 @@
+%\pdfoutput=1
 % File interchangeability.tex
 %
 \documentclass[11pt,a4paper]{article}
@@ -90,7 +91,7 @@ IBM Research\\
     words within a context window around it,
     whose size (or maximal size) is a hyper-parameter of the training algorithm.
     Word vectors are then learned by predicting these co-occurrences or
-    factorizing the co-occurrence matrix.
+    factorizing a co-occurrence matrix.
 
     We discover a clear relationship between the context window size hyper-parameter
     and the performance of a word embedding model in estimating the similarity between words.
@@ -116,8 +117,7 @@ IBM Research\\
         \caption{Performance of the CBOW~(a) and SGNS~(b) algorithms on each benchmark,
         for each window size,
         measured by Spearman correlation between the benchmark score
-        and the word embedding cosine similarity.
-        \label{fig:benchmark_correlation}}
+        and the word embedding cosine similarity.\label{fig:benchmark_correlation}}
     \end{figure*}
 %
 %    Figure~\ref{fig:benchmark_correlation} displays the Spearman correlation
@@ -175,8 +175,7 @@ IBM Research\\
     
     \begin{table*}[th]
     \centering
-    \small
-    \def\arraystretch{1.125}
+    \def\arraystretch{1.5}
     \begin{tabular}{l|c||cc||cc|cc|c}
     && \multicolumn{2}{c||}{\bf $\Delta \mathtt{win}=2\to 15 (\%)$}
     & \multicolumn{2}{c|}{\bf $\#$ Related} & \multicolumn{2}{c|}{\bf $\#$ Unrelated} \\
@@ -203,8 +202,7 @@ IBM Research\\
     by benchmark score, respectively.
     \textit{P-value} is calculated using the hypergeometric
     test, comparing the enrichment of interchangeable pairs within related pairs,
-    with a background of all related and unrelated pairs (\S\ref{sec:benchmark_exp}).
-    \label{tab:benchmark_enrichment}}
+    with a background of all related and unrelated pairs (\S\ref{sec:benchmark_exp}).\label{tab:benchmark_enrichment}}
     \end{table*}
     
     \subsection{Evaluation on Benchmarks}\label{sec:eval_exp}
@@ -352,13 +350,11 @@ IBM Research\\
     
     \begin{table}[t]
     \centering
-    \small
-    \setlength\tabcolsep{3.5pt}
-    \def\arraystretch{1.125}
+    \setlength\tabcolsep{2.5pt}
+    \def\arraystretch{1.5}
     \begin{tabular}{l|ccc|ccc|ccc}
-    \multirow{2}{1cm}{\bf Algorithm}
-    & \multicolumn{3}{c|}{\bf NOUN} & \multicolumn{3}{c|}{\bf ADJ} & \multicolumn{3}{c}{\bf VERB} \\
-    & 1 & 15 & r & 1 & 15 & r & 1 & 15 & r \\
+    {\bf Algo-} & \multicolumn{3}{c|}{\bf NOUN} & \multicolumn{3}{c|}{\bf ADJ} & \multicolumn{3}{c}{\bf VERB} \\
+    {\bf rithm} & 1 & 15 & r & 1 & 15 & r & 1 & 15 & r \\
     \hline
     CBOW & 79 & 70 & -0.96 & 72 & 48 & -0.93 & 55 & 41 & -0.91 \\
     SGNS & 78 & 66 & -0.95 & 66 & 39 & -0.94 & 51 & 41 & -0.92 
@@ -366,8 +362,7 @@ IBM Research\\
     \caption{Percentage of interchangeable neighbors per pivot POS for the smallest (1) and largest (15)
         windows in our experiment, for the CBOW and SGNS algorithms.
         The number of interchangeable neighbors has a strong negative Pearson correlation (r) with window size
-        for windows 1 to 15 ($p<0.01$, two-tailed t-test).
-    \label{tab:nn_pos_hist}}
+        for windows 1 to 15 ($p<0.01$, two-tailed t-test).\label{tab:nn_pos_hist}}
     \end{table}
     
     \paragraph{Results.}
@@ -384,7 +379,7 @@ IBM Research\\
     The number of nearest neighbors of the same POS is consistently decreasing with window size,
     while the number of nearest neighbors of other POS are increasing or unaffected.
     
-    \begin{figure*}[h]
+    \begin{figure*}[t]
         \begin{subfigure}[b]{.5\textwidth}
         \includegraphics[width=\textwidth]{NOUN_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
         \includegraphics[width=\textwidth]{ADJ_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
@@ -399,8 +394,7 @@ IBM Research\\
         \end{subfigure}
         \caption{Number of neighbor per POS for each pivot POS and for each window size,
         for the CBOW~(a) and SGNS~(b) algorithms.
-        The number of same-POS neighbors is consistently decreasing with window size.
-        \label{fig:nn_pos_hist}}
+        The number of same-POS neighbors is consistently decreasing with window size.\label{fig:nn_pos_hist}}
     \end{figure*}
     
     \paragraph{Discussion.}
