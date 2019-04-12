@@ -45,6 +45,9 @@ IBM Research\\
 
 \begin{document}
     \maketitle
+    
+\setlength{\abovecaptionskip}{16pt}
+\def\arraystretch{1.7}
 
     \begin{abstract}
     Nearest neighbors in word embedding models are commonly observed to be
@@ -175,8 +178,7 @@ IBM Research\\
     
     \begin{table*}[th]
     \centering
-    \def\arraystretch{1.5}
-    \begin{tabular}{l|c||cc||cc|cc|c}
+    \begin{tabular}{@{}l|c||cc||cc|cc|c@{}}
     && \multicolumn{2}{c||}{\bf $\Delta \mathtt{win}=2\to 15 (\%)$}
     & \multicolumn{2}{c|}{\bf $\#$ Related} & \multicolumn{2}{c|}{\bf $\#$ Unrelated} \\
     \bf Benchmark & \bf Size& \bf CBOW & \bf SGNS
@@ -351,7 +353,6 @@ IBM Research\\
     \begin{table}[t]
     \centering
     \setlength\tabcolsep{2.5pt}
-    \def\arraystretch{1.5}
     \begin{tabular}{l|ccc|ccc|ccc}
     {\bf Algo-} & \multicolumn{3}{c|}{\bf NOUN} & \multicolumn{3}{c|}{\bf ADJ} & \multicolumn{3}{c}{\bf VERB} \\
     {\bf rithm} & 1 & 15 & r & 1 & 15 & r & 1 & 15 & r \\
@@ -380,13 +381,14 @@ IBM Research\\
     while the number of nearest neighbors of other POS are increasing or unaffected.
     
     \begin{figure*}[t]
-        \begin{subfigure}[b]{.5\textwidth}
+        \begin{subfigure}[b]{.475\textwidth}
         \includegraphics[width=\textwidth]{NOUN_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
         \includegraphics[width=\textwidth]{ADJ_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
         \includegraphics[width=\textwidth]{VERB_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
         \caption{CBOW}
         \end{subfigure}
-        \begin{subfigure}[b]{.5\textwidth}
+        \hfill
+        \begin{subfigure}[b]{.475\textwidth}
         \includegraphics[width=\textwidth]{NOUN_nn_100_fasttext_enwiki-20170501-clean_skipgram-300d-min500_pos.png}
         \includegraphics[width=\textwidth]{ADJ_nn_100_fasttext_enwiki-20170501-clean_skipgram-300d-min500_pos.png}
         \includegraphics[width=\textwidth]{VERB_nn_100_fasttext_enwiki-20170501-clean_skipgram-300d-min500_pos.png}
