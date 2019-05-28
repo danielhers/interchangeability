@@ -1,0 +1,98 @@
+\documentclass[extrafontsizes,60pt,twocolumn]{memoir}
+\setstocksize{48in}{96in}
+\settrimmedsize{48in}{96in}{*}
+\setlrmarginsandblock{1in}{1in}{*}
+\setulmarginsandblock{1.4in}{20mm}{*}
+
+\usepackage[svgnames,table]{xcolor}
+\usepackage[none]{hyphenat}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage{amsfonts, amsmath, amsthm, amssymb}
+\usepackage{wrapfig}
+\usepackage{lipsum,adjustbox}
+\usepackage[absolute,overlay]{textpos}
+\usepackage{multirow}
+\usepackage{titlesec}
+\usepackage{cuted}
+\usepackage[inline]{enumitem}
+\usepackage{url}
+\usepackage{tikz,pgfplots,pgfplotstable}
+\usepackage{tikz-dependency}
+\usepackage{collcell}
+\usepackage[most]{tcolorbox}
+\usepackage[charter]{mathdesign}
+\usetikzlibrary{arrows.meta}
+\captionsetup{labelformat=empty}
+\graphicspath{{figures/}}
+\renewcommand{\chapter}[2]{}
+\DeclareMathOperator*{\wine}{\textbf{wine}}
+\DeclareMathOperator*{\service}{\textbf{service}}
+\DeclareMathOperator*{\here}{\textbf{here}}
+\DeclareMathOperator*{\again}{\textbf{again}}
+\DeclareMathOperator*{\food}{\textbf{food}}
+\DeclareMathOperator*{\out}{\textbf{out}}
+\DeclareMathOperator*{\moment}{\textbf{moment}}
+
+% for confusion matrix
+\newcommand{\ApplyGradient}[1]{%
+  \pgfmathsetmacro{\PercentColor}{(#1-0)/63.88}%
+  \pgfmathsetmacro{\PercentInverse}{ifthenelse(\PercentColor > 70, 0, 100)}%
+  %\textcolor{black!\PercentColor}{#1}
+  \edef\x{\noexpand\cellcolor{red!\PercentColor}}\x\textcolor{black!\PercentInverse}{#1}%
+}
+\newcolumntype{R}{>{\collectcell\ApplyGradient}{c}<{\endcollectcell}}
+
+\begin{document}
+
+\setlength{\columnseprule}{0.4pt}
+\setlength{\abovedisplayskip}{3pt}
+\setlength{\belowdisplayskip}{3pt}
+
+\begin{strip}
+  \begin{center}
+  \scalebox{1.75}{
+    \HUGE\textbf{Syntactic Interchangeability in Word Embedding Models}}
+  \end{center}
+  \begin{center}
+  \begin{minipage}[b]{.9\linewidth}
+    \centering
+    \begin{minipage}{.7\linewidth}
+      \HUGE\textbf{Daniel Hershcovich} \& \textbf{Assaf Toledo} \& \textbf{Alon Halfon} \& \textbf{Noam Slonim}
+    \end{minipage}
+    \begin{minipage}{.25\linewidth}
+      \HUGE\textbf{IBM Research}
+    \end{minipage}
+    
+    \vspace{.5in}
+    \titlespacing*{\section}{0pt}{8mm}{.5in}
+    \begin{adjustbox}{margin=.5in,frame,minipage=\textwidth,center}
+      \centering\huge
+      Nearest neighbors in word embedding models are commonly observed to be
+    semantically similar, but the relations between them can vary greatly.
+    \end{adjustbox}
+  \end{minipage}
+  \end{center}
+\end{strip}
+
+%----------------------------------------------------------------------------------------
+
+
+
+
+\begin{minipage}{.42\columnwidth}
+\color{DarkSlateGray}
+\tiny
+\setlength\bibitemsep{0pt}
+\bibliographystyle{plain}
+\bibliography{references}
+\end{minipage}
+\hspace{.3in}
+\begin{minipage}{.475\columnwidth}
+\color{Black}
+\end{minipage}
+
+
+\end{document}
