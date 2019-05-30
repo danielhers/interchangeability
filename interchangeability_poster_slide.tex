@@ -1,4 +1,4 @@
-\documentclass[t,xcolor={svgnames,table}]{beamer}
+\documentclass[t,xcolor={svgnames,table},aspectratio=169]{beamer}
 
 \usepackage[utf8]{inputenc} % allow utf-8 input
 \usepackage[T1]{fontenc}    % use 8-bit T1 fonts
@@ -22,26 +22,27 @@
 \usetikzlibrary{arrows.meta}
 \captionsetup{labelformat=empty}
 \graphicspath{{figures/}}
+\setbeamertemplate{frametitle}[default][center]
 
 \begin{document}
 
 \begin{frame}
 \frametitle{Syntactic Interchangeability in Word Embedding Models}
-  \textbf{Daniel Hershcovich} \& \textbf{Assaf Toledo} \& \\
-  \textbf{Alon Halfon} \& \textbf{Noam Slonim}
+  \centering
+  \textbf{Daniel Hershcovich}, Assaf Toledo, Alon Halfon \& Noam Slonim
   \hfill
   \textbf{IBM Research}
   \vfill
   
   \begin{adjustbox}{margin=5,frame,minipage=\textwidth,center,color=purple}
     Word embeddings trained with larger context windows --- \\
-    capture semantic similarity better \textit{but} are less sensitive to POS
+    capture semantic similarity better \textit{but} are less sensitive to part-of-speech (POS)
   \end{adjustbox}
   \vfill
   
-  \includegraphics[width=.48\textwidth,trim=17mm 13mm 0 0,clip]{similarities_fasttext_enwiki-20170501-clean_cbow-300d-min500_eval.png}
+  \includegraphics[width=.45\textwidth,trim=16.5mm 13mm 0 0,clip]{similarities_fasttext_enwiki-20170501-clean_cbow-300d-min500_eval.png}\hfill
   \includegraphics[width=.5\textwidth,trim=2cm 14mm 0 7.5mm,clip,height=33mm]{VERB_nn_100_fasttext_enwiki-20170501-clean_cbow-300d-min500_pos.png}
-  Similarity benchmark scores \hfill Nearest neighbor interchangeability
+  Similarity benchmark scores \hspace{28mm} \# Nearest neighbors by POS
 
 \end{frame}
 
